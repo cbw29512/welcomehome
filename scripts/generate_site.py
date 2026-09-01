@@ -40,6 +40,7 @@ def header_html(active=""):
       <a href="/#how">How it helps</a>
       <a href="/#safety">Care &amp; safety</a>
     </nav>
+    <a class="coffee-link" href="{SITE['coffee_url']}" target="_blank" rel="noopener">Buy me a coffee</a>
   </div>
 </header>
 """
@@ -52,6 +53,7 @@ def footer_html():
     <div class="footer-links">
       <a href="/accessibility.html">Accessibility</a>
       <a href="/privacy.html">Privacy</a>
+      <a href="{SITE['coffee_url']}" target="_blank" rel="noopener">Support {SITE['name']}</a>
     </div>
   </div>
 </footer>

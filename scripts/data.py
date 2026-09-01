@@ -11,6 +11,7 @@ SITE = {
                    "supply lists, first vet visit prep, and home safety walk-throughs "
                    "for dogs, cats, rabbits, guinea pigs, and birds. No account, no email.",
     "url": "https://welcomehomepet.netlify.app",
+    "coffee_url": "https://buymeacoffee.com/divclass016",
     "color": "#c1694f",
     "color_dark": "#8f4835",
     "bg": "#faf5ef",

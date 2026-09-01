@@ -74,6 +74,15 @@ a:hover{ color: var(--marigold-ink); }
 .site-nav a{ text-decoration:none; color: var(--ink-soft); }
 .site-nav a:hover{ color: var(--clay-ink); }
 
+.coffee-link{
+  display:inline-block; font-family: var(--sans); font-weight:600; font-size: .88rem;
+  padding: .45em 1em; border-radius: 999px;
+  background: var(--marigold); color: #fff; text-decoration:none;
+  border: 1px solid var(--marigold);
+  white-space: nowrap;
+}
+.coffee-link:hover{ background: var(--marigold-ink); border-color: var(--marigold-ink); color:#fff; }
+
 /* ---- Hero ---- */
 .hero{ padding: 3.4rem 0 2.6rem; border-bottom: 1px solid var(--line); }
 .hero .eyebrow{

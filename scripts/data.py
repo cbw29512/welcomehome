@@ -10,7 +10,7 @@ SITE = {
     "description": "Free printable checklists for new pet parents. First week plans, "
                    "supply lists, first vet visit prep, and home safety walk-throughs "
                    "for dogs, cats, rabbits, guinea pigs, and birds. No account, no email.",
-    "url": "https://welcomehomepets.netlify.app",
+    "url": "https://welcomehomepet.netlify.app",
     "color": "#c1694f",
     "color_dark": "#8f4835",
     "bg": "#faf5ef",

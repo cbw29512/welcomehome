@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Content data for New Nest — free new-pet checklist printables.
+Content data for Welcome Home — free new-pet checklist printables.
 Each species has 4 checklists: first-week, supplies, vet-visit, pet-proofing.
 """
 
 SITE = {
-    "name": "New Nest",
+    "name": "Welcome Home",
     "tagline": "Free checklists for the first days with a new pet.",
     "description": "Free printable checklists for new pet parents. First week plans, "
                    "supply lists, first vet visit prep, and home safety walk-throughs "
                    "for dogs, cats, rabbits, guinea pigs, and birds. No account, no email.",
-    "url": "https://newnestpets.netlify.app",
+    "url": "https://welcomehomepets.netlify.app",
     "color": "#c1694f",
     "color_dark": "#8f4835",
     "bg": "#faf5ef",

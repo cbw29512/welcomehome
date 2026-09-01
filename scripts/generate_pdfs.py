@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate all printable checklist PDFs for New Nest."""
+"""Generate all printable checklist PDFs for Welcome Home."""
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch

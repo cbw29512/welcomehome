@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate the New Nest static site (index + worksheet pages + utility pages)."""
+"""Generate the Welcome Home static site (index + worksheet pages + utility pages)."""
 import os
 from data import SITE, SPECIES, CATEGORIES, CHECKLISTS
 
@@ -256,7 +256,7 @@ def build_worksheet(sp_key, cat_key):
 
 def build_accessibility():
     title = f"Accessibility | {SITE['name']}"
-    desc = "Accessibility statement for New Nest's free pet checklist printables and web worksheets."
+    desc = "Accessibility statement for Welcome Home's free pet checklist printables and web worksheets."
     html = base_head(title, desc, "/accessibility.html") + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
@@ -286,7 +286,7 @@ def build_accessibility():
 
 def build_privacy():
     title = f"Privacy | {SITE['name']}"
-    desc = "Privacy information for New Nest's free pet checklist printables."
+    desc = "Privacy information for Welcome Home's free pet checklist printables."
     html = base_head(title, desc, "/privacy.html") + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
@@ -297,7 +297,7 @@ def build_privacy():
     <h2>What's stored, and where</h2>
     <p>When you check off items on a web worksheet, or type your pet's name and the date they came home, that's saved using your browser's local storage — on your device only. It is never sent to a server, and clearing your browser data will remove it.</p>
     <h2>Hosting</h2>
-    <p>This site is static and hosted on Netlify. Netlify may log basic, aggregate technical request data (like any web host) to keep the service running; New Nest itself does not add any additional analytics.</p>
+    <p>This site is static and hosted on Netlify. Netlify may log basic, aggregate technical request data (like any web host) to keep the service running; Welcome Home itself does not add any additional analytics.</p>
   </section>
 </main>
 {footer_html()}

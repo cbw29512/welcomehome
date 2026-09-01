@@ -1,4 +1,4 @@
-// New Nest — small progressive-enhancement script. No build step, no framework.
+// Welcome Home — small progressive-enhancement script. No build step, no framework.
 (function () {
   "use strict";
 
@@ -32,7 +32,7 @@
   var worksheet = document.querySelector("[data-worksheet-id]");
   if (worksheet) {
     var id = worksheet.getAttribute("data-worksheet-id");
-    var storeKey = "newnest:" + id;
+    var storeKey = "welcomehome:" + id;
 
     function loadState() {
       try {

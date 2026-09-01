@@ -1,6 +1,9 @@
 name: GitHub Pages Staging
 
 on:
+  push:
+    branches:
+      - quality/github-ready
   workflow_dispatch:
 
 permissions:
@@ -9,7 +12,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-staging
   cancel-in-progress: true
 
 jobs:
@@ -25,7 +28,7 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
-      - name: Prepare project-site paths
+      - name: Prepare project-site staging artifact
         run: |
           python3 - <<'PY'
           import logging
@@ -36,20 +39,34 @@ jobs:
           source = Path("site")
           target = Path("pages-dist")
           base_path = "/welcomehome"
+          noindex = '<meta name="robots" content="noindex,nofollow">'
 
           try:
               if target.exists():
                   shutil.rmtree(target)
               shutil.copytree(source, target)
+
               for page in target.rglob("*.html"):
                   text = page.read_text(encoding="utf-8")
                   text = text.replace('href="/', f'href="{base_path}/')
                   text = text.replace('src="/', f'src="{base_path}/')
+                  if 'name="robots"' not in text:
+                      text = text.replace("</head>", f"{noindex}\n</head>")
                   page.write_text(text, encoding="utf-8")
+
+              # Staging must never compete with the eventual production URL in search.
+              (target / "robots.txt").write_text(
+                  "User-agent: *\nDisallow: /\n",
+                  encoding="utf-8",
+              )
+              sitemap = target / "sitemap.xml"
+              if sitemap.exists():
+                  sitemap.unlink()
+
               (target / ".nojekyll").write_text("", encoding="utf-8")
-              logging.info("Prepared %s for GitHub project Pages at %s/", target, base_path)
+              logging.info("Prepared noindex GitHub Pages staging artifact at %s/", base_path)
           except Exception:
-              logging.exception("Could not prepare GitHub Pages artifact")
+              logging.exception("Could not prepare GitHub Pages staging artifact")
               raise
           PY
 

@@ -2,6 +2,12 @@
 (function () {
   "use strict";
 
+  function warn(message, error) {
+    if (window.console && typeof window.console.warn === "function") {
+      window.console.warn("Welcome Home: " + message, error || "");
+    }
+  }
+
   // ---- Homepage species filter ----
   var tabs = document.querySelectorAll(".species-tabs button");
   if (tabs.length) {
@@ -10,18 +16,21 @@
 
     function applyFilter(species) {
       rows.forEach(function (row) {
-        var show = species === "all" || row.getAttribute("data-species") === species;
-        row.style.display = show ? "" : "none";
+        row.hidden = !(species === "all" || row.getAttribute("data-species") === species);
       });
       blocks.forEach(function (block) {
-        var visible = block.querySelectorAll('.checklist-row:not([style*="display: none"])').length;
-        block.style.display = visible ? "" : "none";
+        var blockRows = block.querySelectorAll(".checklist-row");
+        var visible = false;
+        blockRows.forEach(function (row) {
+          if (!row.hidden) visible = true;
+        });
+        block.hidden = !visible;
       });
     }
 
     tabs.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        tabs.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+        tabs.forEach(function (button) { button.setAttribute("aria-pressed", "false"); });
         btn.setAttribute("aria-pressed", "true");
         applyFilter(btn.getAttribute("data-species"));
       });
@@ -37,14 +46,18 @@
     function loadState() {
       try {
         return JSON.parse(window.localStorage.getItem(storeKey) || "{}");
-      } catch (e) {
+      } catch (error) {
+        warn("could not read saved worksheet state", error);
         return {};
       }
     }
+
     function saveState(state) {
       try {
         window.localStorage.setItem(storeKey, JSON.stringify(state));
-      } catch (e) { /* ignore */ }
+      } catch (error) {
+        warn("could not save worksheet state", error);
+      }
     }
 
     var state = loadState();
@@ -57,7 +70,7 @@
       if (!progressEl) return;
       var total = boxes.length;
       var done = 0;
-      boxes.forEach(function (b) { if (b.checked) done++; });
+      boxes.forEach(function (box) { if (box.checked) done += 1; });
       progressEl.textContent = done + " of " + total + " done";
     }
 
@@ -97,9 +110,9 @@
         if (!window.confirm("Clear all checked items on this worksheet?")) return;
         state = {};
         saveState(state);
-        boxes.forEach(function (b) {
-          b.checked = false;
-          b.closest("li").classList.remove("checked");
+        boxes.forEach(function (box) {
+          box.checked = false;
+          box.closest("li").classList.remove("checked");
         });
         if (petName) petName.value = "";
         if (dateHome) dateHome.value = "";

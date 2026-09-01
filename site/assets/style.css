@@ -1,13 +1,12 @@
 /* Welcome Home — visual identity
-   A "welcome-home folder" feel: warm paper, indigo ink, a marigold tag accent.
-   Fraunces for display type, Work Sans for everything functional. */
-
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap');
+   A "welcome-home folder" feel: warm paper, indigo ink, marigold tag accent.
+   Uses local/system fonts only: faster, more private, and no render-blocking font request. */
 
 :root{
   --paper: #f2ecdd;
   --paper-raised: #fbf8f0;
   --ink: #24303d;
+  --ink-strong: #111827;
   --ink-soft: #5b5346;
   --line: #d8cdb3;
   --marigold: #c8871f;
@@ -16,12 +15,12 @@
   --clay-ink: #6d3520;
   --focus: #1f6fb2;
   --radius: 3px;
-  --serif: 'Fraunces', Georgia, serif;
-  --sans: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --serif: Georgia, 'Times New Roman', serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 *{ box-sizing: border-box; }
-html{ scroll-behavior: smooth; }
+html{ scroll-behavior: smooth; text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 
 body{
   margin:0;
@@ -37,13 +36,13 @@ a{ color: var(--clay-ink); }
 a:hover{ color: var(--marigold-ink); }
 
 :focus-visible{
-  outline: 2.5px solid var(--focus);
-  outline-offset: 2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .skip-link{
   position:absolute; left:-999px; top:0;
-  background: var(--ink); color:#fff; padding: .6em 1em;
+  background: var(--ink-strong); color:#fff; padding: .75em 1em;
   z-index: 100; border-radius: var(--radius);
 }
 .skip-link:focus{ left: 1em; top: 1em; }
@@ -62,7 +61,7 @@ a:hover{ color: var(--marigold-ink); }
 }
 .brand{
   display:flex; align-items:baseline; gap:.5rem;
-  font-family: var(--serif); font-weight: 600; font-size: 1.35rem;
+  font-family: var(--serif); font-weight: 700; font-size: 1.35rem;
   color: var(--ink); text-decoration:none;
 }
 .brand .tag-mark{
@@ -71,14 +70,19 @@ a:hover{ color: var(--marigold-ink); }
   transform: rotate(-8deg);
 }
 .site-nav{ display:flex; gap: 1.4rem; font-size: .95rem; flex-wrap: wrap; }
-.site-nav a{ text-decoration:none; color: var(--ink-soft); }
+.site-nav a{
+  display:inline-flex; align-items:center; min-height: 44px;
+  text-decoration:none; color: var(--ink-soft);
+}
 .site-nav a:hover{ color: var(--clay-ink); }
 
 .coffee-link{
-  display:inline-block; font-family: var(--sans); font-weight:600; font-size: .88rem;
-  padding: .45em 1em; border-radius: 999px;
-  background: var(--marigold); color: #fff; text-decoration:none;
-  border: 1px solid var(--marigold);
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height: 44px;
+  font-family: var(--sans); font-weight:700; font-size: .9rem;
+  padding: .5em 1em; border-radius: 999px;
+  background: var(--marigold); color: var(--ink-strong); text-decoration:none;
+  border: 1px solid #8f5f13;
   white-space: nowrap;
 }
 .coffee-link:hover{ background: var(--marigold-ink); border-color: var(--marigold-ink); color:#fff; }
@@ -90,7 +94,7 @@ a:hover{ color: var(--marigold-ink); }
   margin: 0 0 .6rem;
 }
 .hero h1{
-  font-family: var(--serif); font-weight: 500; font-style: italic;
+  font-family: var(--serif); font-weight: 700; font-style: italic;
   font-size: clamp(2rem, 4.2vw, 3rem);
   line-height: 1.12; margin: 0 0 1rem; max-width: 15ch;
   color: var(--ink);
@@ -101,7 +105,9 @@ a:hover{ color: var(--marigold-ink); }
 .hero-actions{ display:flex; align-items:center; gap:1.2rem; flex-wrap: wrap; }
 
 .btn{
-  display:inline-block; font-family: var(--sans); font-weight:600; font-size: 1rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height: 44px;
+  font-family: var(--sans); font-weight:700; font-size: 1rem;
   padding: .72em 1.35em; border-radius: var(--radius);
   background: var(--ink); color: #fbf8f0; text-decoration:none;
   border: 1px solid var(--ink);
@@ -113,9 +119,9 @@ a:hover{ color: var(--marigold-ink); }
 .btn-ghost:hover{ background: var(--ink); color: var(--paper); }
 .fine-print{ font-size: .88rem; color: var(--ink-soft); margin: 0; }
 
-/* ---- How it helps (numbered, genuinely sequential) ---- */
+/* ---- How it helps ---- */
 .steps{ padding: 2.8rem 0; border-bottom: 1px solid var(--line); }
-.steps h2{ font-family: var(--serif); font-weight: 500; font-size: 1.6rem; margin: 0 0 1.6rem; }
+.steps h2{ font-family: var(--serif); font-weight: 700; font-size: 1.6rem; margin: 0 0 1.6rem; }
 .step-list{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
 .step-list li{ border-top: 2px solid var(--ink); padding-top: .7rem; }
 .step-num{ font-family: var(--serif); font-style: italic; color: var(--marigold-ink); font-size: 1.05rem; }
@@ -124,17 +130,18 @@ a:hover{ color: var(--marigold-ink); }
 
 /* ---- Finder ---- */
 .finder{ padding: 2.8rem 0 1rem; }
-.finder h2{ font-family: var(--serif); font-weight: 500; font-size: 1.6rem; margin: 0 0 .4rem; }
+.finder h2{ font-family: var(--serif); font-weight: 700; font-size: 1.6rem; margin: 0 0 .4rem; }
 .finder > .wrap > p{ color: var(--ink-soft); margin: 0 0 1.5rem; max-width: 55ch; }
 
 .species-tabs{
   display:flex; gap:.6rem; flex-wrap: wrap; margin: 0 0 2.2rem; padding:0; list-style:none;
 }
 .species-tabs button{
-  font-family: var(--sans); font-weight: 600; font-size: .95rem;
+  min-height: 44px;
+  font-family: var(--sans); font-weight: 700; font-size: .95rem;
   background: var(--paper-raised); color: var(--ink);
   border: 1px solid var(--line); border-radius: 999px;
-  padding: .5em 1.1em; cursor:pointer;
+  padding: .55em 1.1em; cursor:pointer;
 }
 .species-tabs button .em{ margin-right:.4em; }
 .species-tabs button[aria-pressed="true"]{
@@ -144,7 +151,7 @@ a:hover{ color: var(--marigold-ink); }
 
 .category-block{ margin: 0 0 2.6rem; }
 .category-block h3{
-  font-family: var(--serif); font-weight: 600; font-size: 1.3rem;
+  font-family: var(--serif); font-weight: 700; font-size: 1.3rem;
   margin: 0 0 .15rem;
   border-bottom: 1px solid var(--line); padding-bottom: .7rem;
 }
@@ -157,17 +164,20 @@ a:hover{ color: var(--marigold-ink); }
 }
 .checklist-row:last-child{ border-bottom: none; }
 .checklist-row .who{
-  font-weight: 600; font-size: 1rem; margin: 0 0 .2rem;
+  font-weight: 700; font-size: 1rem; margin: 0 0 .2rem;
   display:flex; align-items:center; gap:.4rem;
 }
 .checklist-row .what{ color: var(--ink-soft); font-size: .93rem; margin:0; max-width: 46ch; }
 .checklist-links{ display:flex; gap: .9rem; flex-shrink:0; font-size: .93rem; white-space: nowrap; }
-.checklist-links a{ text-decoration: none; font-weight: 600; }
+.checklist-links a{
+  display:inline-flex; align-items:center; min-height: 44px;
+  text-decoration: none; font-weight: 700;
+}
 .checklist-links a.pdf::before{ content: "↓ "; }
 
 /* ---- Safety note ---- */
 .safety{ padding: 2.6rem 0; border-top: 1px solid var(--line); background: var(--paper-raised); }
-.safety h2{ font-family: var(--serif); font-weight: 500; font-size: 1.5rem; margin: 0 0 .8rem; }
+.safety h2{ font-family: var(--serif); font-weight: 700; font-size: 1.5rem; margin: 0 0 .8rem; }
 .safety p{ color: var(--ink-soft); max-width: 62ch; margin: 0 0 .8rem; }
 .safety p:last-child{ margin-bottom:0; }
 
@@ -178,17 +188,25 @@ a:hover{ color: var(--marigold-ink); }
   gap: 1rem; flex-wrap: wrap;
 }
 .site-footer p{ margin:0; color: var(--ink-soft); font-size: .9rem; max-width: 42ch; }
-.footer-links{ display:flex; gap: 1.2rem; font-size: .9rem; }
-.footer-links a{ text-decoration:none; color: var(--ink-soft); }
+.footer-links{ display:flex; gap: 1rem; font-size: .9rem; flex-wrap:wrap; }
+.footer-links a{
+  display:inline-flex; align-items:center; min-height: 44px;
+  text-decoration:none; color: var(--ink-soft);
+}
 .footer-links a:hover{ color: var(--clay-ink); }
 
-/* ---- Worksheet pages (individual checklist) ---- */
+/* ---- Worksheet pages ---- */
 .worksheet-header{ border-bottom: 1px solid var(--line); background: var(--paper-raised); }
 .worksheet-header .wrap{ padding: 1.6rem 1.5rem 1.4rem; }
 .crumb{ font-size: .88rem; color: var(--ink-soft); margin: 0 0 .6rem; }
-.crumb a{ text-decoration:none; }
+.crumb a{
+  color: var(--clay-ink);
+  text-decoration: underline;
+  text-decoration-thickness: .08em;
+  text-underline-offset: .16em;
+}
 .worksheet-header h1{
-  font-family: var(--serif); font-weight: 500; font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  font-family: var(--serif); font-weight: 700; font-size: clamp(1.6rem, 3.4vw, 2.2rem);
   margin: 0 0 .3rem;
 }
 .worksheet-header .sub{ color: var(--ink-soft); margin: 0 0 1.1rem; }
@@ -200,8 +218,9 @@ a:hover{ color: var(--marigold-ink); }
 }
 .pet-fields label{ font-size: .9rem; color: var(--ink-soft); display:block; margin-bottom:.3rem; }
 .pet-fields input{
+  min-height: 44px;
   font-family: var(--sans); font-size: 1rem; padding: .45em .6em;
-  border: 1px solid var(--line); border-radius: var(--radius); background: #fff;
+  border: 1px solid #9b8f77; border-radius: var(--radius); background: #fff; color: var(--ink);
   min-width: 220px;
 }
 
@@ -211,48 +230,59 @@ a:hover{ color: var(--marigold-ink); }
 
 .section-block{ margin: 0 0 2.1rem; }
 .section-block h2{
-  font-family: var(--serif); font-weight: 600; font-size: 1.15rem;
+  font-family: var(--serif); font-weight: 700; font-size: 1.15rem;
   margin: 0 0 .8rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line);
   color: var(--clay-ink);
 }
 .check-list{ list-style:none; margin:0; padding:0; }
 .check-list li{
   display:flex; align-items:flex-start; gap: .75rem;
-  padding: .55rem 0; border-bottom: 1px dashed var(--line);
+  padding: .6rem 0; border-bottom: 1px dashed var(--line);
 }
 .check-list li:last-child{ border-bottom:none; }
 .check-list input[type="checkbox"]{
-  width: 1.15rem; height: 1.15rem; margin-top: .2rem; flex-shrink:0;
+  width: 1.35rem; height: 1.35rem; margin-top: .15rem; flex-shrink:0;
   accent-color: var(--clay-ink);
 }
-.check-list label{ cursor:pointer; }
-.check-list li.checked label{ color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); }
+.check-list label{ cursor:pointer; padding:.08rem 0; }
+.check-list li.checked label{ color: var(--ink-soft); text-decoration: line-through; text-decoration-color: #8f8470; }
 
 .reset-row{ margin-top: 1rem; }
 .reset-row button{
-  font-family: var(--sans); font-size: .88rem; color: var(--ink-soft);
-  background:none; border: none; text-decoration: underline; cursor:pointer; padding: 0;
+  min-height: 44px;
+  font-family: var(--sans); font-size: .9rem; color: var(--clay-ink);
+  background:none; border: none; text-decoration: underline; cursor:pointer; padding: .45rem 0;
 }
 
 /* ---- Utility pages ---- */
-.simple-page{ padding: 2.6rem 0 4rem; max-width: 66ch; margin: 0 auto; }
-.simple-page h1{ font-family: var(--serif); font-weight: 500; font-size: 2rem; }
-.simple-page h2{ font-family: var(--serif); font-weight: 600; font-size: 1.25rem; margin-top: 2rem; }
+.simple-page{ padding: 2.6rem 1.5rem 4rem; max-width: 66ch; margin: 0 auto; }
+.simple-page h1{ font-family: var(--serif); font-weight: 700; font-size: 2rem; }
+.simple-page h2{ font-family: var(--serif); font-weight: 700; font-size: 1.25rem; margin-top: 2rem; }
 .simple-page p, .simple-page li{ color: var(--ink-soft); }
 
 /* ---- Print ---- */
 @media print{
   .site-header, .site-footer, .worksheet-actions, .reset-row, .skip-link{ display:none !important; }
   body{ background: #fff; }
-  .pet-fields input{ border: none; border-bottom: 1px solid #999; border-radius:0; }
+  .pet-fields input{ border: none; border-bottom: 1px solid #777; border-radius:0; }
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 760px){
+  .wrap{ padding-left: 1rem; padding-right: 1rem; }
+  .site-header .wrap{ align-items:flex-start; }
+  .site-nav{ gap:.55rem 1rem; order:3; width:100%; }
+  .hero{ padding-top: 2.6rem; }
   .step-list{ grid-template-columns: 1fr; }
-  .checklist-row{ flex-direction: column; align-items:flex-start; }
+  .checklist-row{ flex-direction: column; align-items:flex-start; gap:.55rem; }
+  .checklist-links{ white-space: normal; flex-wrap:wrap; }
+  .pet-fields input{ width:100%; min-width:0; }
 }
 
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior: auto; }
+}
+
+@media (forced-colors: active){
+  .brand .tag-mark, .coffee-link, .btn, .species-tabs button{ forced-color-adjust:auto; }
 }

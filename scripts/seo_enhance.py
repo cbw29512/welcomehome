@@ -112,9 +112,11 @@ def enhance(page: Path) -> bool:
     info = PageInfo()
     info.feed(text)
     additions: list[str] = []
+    rel = page.relative_to(SITE).as_posix()
 
     if 'name="robots"' not in text:
-        additions.append('<meta name="robots" content="index, follow, max-image-preview:large">')
+        robots = "noindex, follow" if rel == "404.html" else "index, follow, max-image-preview:large"
+        additions.append(f'<meta name="robots" content="{robots}">')
     if 'rel="icon"' not in text:
         additions.append('<link rel="icon" href="/favicon.ico" sizes="any">')
     if 'property="og:site_name"' not in text:

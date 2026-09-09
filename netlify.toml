@@ -1,6 +1,6 @@
 [build]
   publish = "site"
-  command = ""
+  command = "python3 scripts/seo_enhance.py && python3 scripts/qa_site.py"
 
 [[headers]]
   for = "/*"
@@ -9,6 +9,7 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000"
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
 
 # CSS and JS use stable filenames, so they must revalidate after a deploy.
@@ -22,3 +23,8 @@
   for = "/downloads/*"
   [headers.values]
     Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

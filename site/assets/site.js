@@ -8,33 +8,11 @@
     }
   }
 
-  // ---- Homepage species filter ----
-  var tabs = document.querySelectorAll(".species-tabs button");
-  if (tabs.length) {
-    var rows = document.querySelectorAll(".checklist-row");
-    var blocks = document.querySelectorAll(".category-block");
-
-    function applyFilter(species) {
-      rows.forEach(function (row) {
-        row.hidden = !(species === "all" || row.getAttribute("data-species") === species);
-      });
-      blocks.forEach(function (block) {
-        var blockRows = block.querySelectorAll(".checklist-row");
-        var visible = false;
-        blockRows.forEach(function (row) {
-          if (!row.hidden) visible = true;
-        });
-        block.hidden = !visible;
-      });
-    }
-
-    tabs.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        tabs.forEach(function (button) { button.setAttribute("aria-pressed", "false"); });
-        btn.setAttribute("aria-pressed", "true");
-        applyFilter(btn.getAttribute("data-species"));
-      });
-    });
+  // ---- Print button (only shown when JavaScript can run window.print) ----
+  var printBtn = document.querySelector("[data-print]");
+  if (printBtn && typeof window.print === "function") {
+    printBtn.hidden = false;
+    printBtn.addEventListener("click", function () { window.print(); });
   }
 
   // ---- Worksheet checkbox persistence + pet name/date ----
@@ -66,6 +44,7 @@
     var petName = document.querySelector("#pet-name");
     var dateHome = document.querySelector("#date-home");
     var progressEl = worksheet.querySelector("[data-progress]");
+    var progressBar = worksheet.querySelector("[data-progress-bar]");
     var SUPPORT_URL = "https://buymeacoffee.com/divclass016";
 
     function supportLink(className, text) {
@@ -78,9 +57,7 @@
       return link;
     }
 
-    // Optional support button next to "Download printable PDF" (the moment of value).
-    var actions = document.querySelector(".worksheet-actions");
-    if (actions) actions.appendChild(supportLink("btn btn-ghost", "\u2615 Support these free checklists"));
+    // The support card and header link are rendered in the HTML (generate_site.py).
 
     // Gentle thank-you once every item is checked off.
     var doneNote = document.createElement("p");
@@ -89,8 +66,9 @@
     doneNote.appendChild(document.createTextNode("All done \u2014 welcome home! If this checklist helped, "));
     doneNote.appendChild(supportLink("", "you can buy me a coffee"));
     doneNote.appendChild(document.createTextNode(" to keep Welcome Home free."));
-    var progressNote = progressEl && progressEl.closest(".progress-note");
-    if (progressNote && progressNote.parentNode) progressNote.parentNode.insertBefore(doneNote, progressNote.nextSibling);
+    doneNote.className = "progress-note done-note";
+    var progressBox = progressEl && (progressEl.closest(".progress-box") || progressEl.closest(".progress-note"));
+    if (progressBox && progressBox.parentNode) progressBox.parentNode.insertBefore(doneNote, progressBox.nextSibling);
 
     function updateProgress() {
       if (!progressEl) return;
@@ -98,6 +76,7 @@
       var done = 0;
       boxes.forEach(function (box) { if (box.checked) done += 1; });
       progressEl.textContent = done + " of " + total + " done";
+      if (progressBar) progressBar.style.width = (total ? Math.round((done / total) * 100) : 0) + "%";
       doneNote.hidden = !(total > 0 && done === total);
     }
 

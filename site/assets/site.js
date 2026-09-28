@@ -62,9 +62,35 @@
 
     var state = loadState();
     var boxes = worksheet.querySelectorAll('input[type="checkbox"]');
-    var petName = worksheet.querySelector("#pet-name");
-    var dateHome = worksheet.querySelector("#date-home");
+    // Pet name/date inputs live in the worksheet header, outside [data-worksheet-id].
+    var petName = document.querySelector("#pet-name");
+    var dateHome = document.querySelector("#date-home");
     var progressEl = worksheet.querySelector("[data-progress]");
+    var SUPPORT_URL = "https://buymeacoffee.com/divclass016";
+
+    function supportLink(className, text) {
+      var link = document.createElement("a");
+      link.className = className;
+      link.href = SUPPORT_URL;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = text;
+      return link;
+    }
+
+    // Optional support button next to "Download printable PDF" (the moment of value).
+    var actions = document.querySelector(".worksheet-actions");
+    if (actions) actions.appendChild(supportLink("btn btn-ghost", "\u2615 Support these free checklists"));
+
+    // Gentle thank-you once every item is checked off.
+    var doneNote = document.createElement("p");
+    doneNote.className = "progress-note";
+    doneNote.hidden = true;
+    doneNote.appendChild(document.createTextNode("All done \u2014 welcome home! If this checklist helped, "));
+    doneNote.appendChild(supportLink("", "you can buy me a coffee"));
+    doneNote.appendChild(document.createTextNode(" to keep Welcome Home free."));
+    var progressNote = progressEl && progressEl.closest(".progress-note");
+    if (progressNote && progressNote.parentNode) progressNote.parentNode.insertBefore(doneNote, progressNote.nextSibling);
 
     function updateProgress() {
       if (!progressEl) return;
@@ -72,6 +98,7 @@
       var done = 0;
       boxes.forEach(function (box) { if (box.checked) done += 1; });
       progressEl.textContent = done + " of " + total + " done";
+      doneNote.hidden = !(total > 0 && done === total);
     }
 
     boxes.forEach(function (box) {

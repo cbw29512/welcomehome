@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Generate the Welcome Home static site (index + worksheet pages + utility pages)."""
 import os
-from data import SITE, SPECIES, CATEGORIES, CHECKLISTS
+from data import SITE, SPECIES, CATEGORIES, CHECKLISTS, AFFILIATE_LINKS, AFFILIATE_STORES, SISTER_SITE
 
 SITE_DIR = os.path.join(os.path.dirname(__file__), "..", "site")
 CHECKLISTS_DIR = os.path.join(SITE_DIR, "checklists")
@@ -36,11 +36,11 @@ def header_html(active=""):
   <div class="wrap">
     <a class="brand" href="/"><span class="tag-mark" aria-hidden="true"></span>{SITE['name']}</a>
     <nav class="site-nav" aria-label="Primary">
-      <a href="/#finder">Find a checklist</a>
-      <a href="/#how">How it helps</a>
+      <a href="/#finder">All checklists</a>
+      <a href="/#how">How it works</a>
       <a href="/#safety">Care &amp; safety</a>
     </nav>
-    <a class="coffee-link" href="{SITE['coffee_url']}" target="_blank" rel="noopener">Buy me a coffee</a>
+    <a class="coffee-link" href="{SITE['coffee_url']}" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
   </div>
 </header>
 """
@@ -61,69 +61,165 @@ def footer_html():
 
 
 # ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
+
+def item_count(sp_key, cat_key):
+    return sum(len(items) for _, items in CHECKLISTS[(sp_key, cat_key)])
+
+
+def pdf_href(sp_key, cat_key):
+    return f"/downloads/{sp_key}-{cat_key}-checklist.pdf"
+
+
+def worksheet_href(sp_key, cat_key):
+    return f"/checklists/{sp_key}-{cat_key}.html"
+
+
+def affiliate_links(sp_key):
+    """Real affiliate links for a pet, in store order. Empty until Chris adds URLs."""
+    links = []
+    for store_key, store_name in AFFILIATE_STORES.items():
+        url = (AFFILIATE_LINKS.get(sp_key, {}).get(store_key) or "").strip()
+        if url.startswith("https://"):
+            links.append((store_name, url))
+    return links
+
+
+def any_affiliate_links():
+    return any(affiliate_links(sp_key) for sp_key in SPECIES)
+
+
+AFFILIATE_TERMS = ("Welcome Home may earn a small commission at no extra cost to you. "
+                   "It never changes what is on the checklist.")
+AFFILIATE_DISCLOSURE = "Affiliate links: " + AFFILIATE_TERMS
+
+
+def support_card(heading_id, heading, body):
+    return f"""<div class="support-card">
+      <div>
+        <h2 id="{heading_id}">{heading}</h2>
+        <p>{body}</p>
+      </div>
+      <a class="coffee-link coffee-lg" href="{SITE['coffee_url']}" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+    </div>"""
+
+
+# ---------------------------------------------------------------------------
 # Homepage
 # ---------------------------------------------------------------------------
 
-def build_species_tabs():
-    buttons = ['<li><button type="button" data-species="all" aria-pressed="true">All pets</button></li>']
+def build_pet_picker():
+    items = []
     for key, sp in SPECIES_SORTED:
-        buttons.append(
-            f'<li><button type="button" data-species="{key}" aria-pressed="false">'
-            f'<span class="em" aria-hidden="true">{sp["emoji"]}</span>{sp["label"]}</button></li>'
+        items.append(
+            f'<li><a href="#pet-{key}"><span class="em" aria-hidden="true">{sp["emoji"]}</span>'
+            f'<span class="picker-name">{sp["label"]}</span>'
+            f'<span class="picker-meta">{len(CATEGORIES)} checklists</span></a></li>'
         )
-    return "\n      ".join(buttons)
+    return "\n          ".join(items)
 
 
-def build_category_blocks():
-    blocks = []
-    for cat_key, cat in CATEGORIES_SORTED:
-        rows = []
-        for sp_key, sp in SPECIES_SORTED:
-            pdf_href = f"/downloads/{sp_key}-{cat_key}-checklist.pdf"
-            worksheet_href = f"/checklists/{sp_key}-{cat_key}.html"
-            first_items = [it for _, items in CHECKLISTS[(sp_key, cat_key)] for it in items][:2]
-            preview = "; ".join(first_items).rstrip(".")
-            rows.append(f"""      <div class="checklist-row" data-species="{sp_key}">
-        <div>
-          <p class="who"><span aria-hidden="true">{sp['emoji']}</span> {sp['label']}</p>
-          <p class="what">{preview}, and more.</p>
-        </div>
-        <div class="checklist-links">
-          <a class="pdf" href="{pdf_href}">Printable PDF</a>
-          <a class="web" href="{worksheet_href}">Web worksheet</a>
-        </div>
-      </div>""")
-        blocks.append(f"""  <div class="category-block" id="{cat_key}">
-    <h3>{cat['title']}</h3>
-    <p class="cat-desc">{cat['desc']}</p>
-{chr(10).join(rows)}
-  </div>""")
-    return "\n\n".join(blocks)
+def build_pet_jump():
+    links = []
+    for key, sp in SPECIES_SORTED:
+        links.append(f'<a href="#pet-{key}"><span aria-hidden="true">{sp["emoji"]}</span> {sp["label"]}</a>')
+    return "\n        ".join(links)
+
+
+def build_pet_panels():
+    panels = []
+    for sp_key, sp in SPECIES_SORTED:
+        cards = []
+        for step, (cat_key, cat) in enumerate(CATEGORIES_SORTED, start=1):
+            shop = ""
+            if cat_key == "supplies":
+                links = affiliate_links(sp_key)
+                if links:
+                    shop_links = " ".join(
+                        f'<a href="{url}" target="_blank" rel="sponsored noopener">{name} ↗</a>'
+                        for name, url in links
+                    )
+                    shop = f'\n          <p class="card-shop">Shop this list: {shop_links}</p>'
+            cards.append(f"""        <li class="card">
+          <p class="card-step">Step {step} of {len(CATEGORIES)}</p>
+          <h4>{cat['title']}</h4>
+          <p class="card-desc">{cat['desc']}</p>
+          <div class="card-actions">
+            <a class="btn btn-sm" href="{pdf_href(sp_key, cat_key)}">↓ Download PDF<span class="sr-only">: {sp['label']} {cat['short']}</span></a>
+            <a class="card-link" href="{worksheet_href(sp_key, cat_key)}">Fill in online<span class="sr-only">: {sp['label']} {cat['short']}</span> <span aria-hidden="true">→</span></a>
+          </div>
+          <p class="card-meta">{item_count(sp_key, cat_key)} items · printable or on your phone</p>{shop}
+        </li>""")
+        panels.append(f"""    <section class="pet-panel" id="pet-{sp_key}" aria-labelledby="pet-{sp_key}-title">
+      <div class="pet-panel-head">
+        <h3 id="pet-{sp_key}-title"><span aria-hidden="true">{sp['emoji']}</span> {sp['label']} checklists</h3>
+        <p>{sp['blurb']}. Start with step 1, or grab the one you need.</p>
+      </div>
+      <ul class="card-grid">
+{chr(10).join(cards)}
+      </ul>
+    </section>""")
+    return "\n\n".join(panels)
 
 
 def build_index():
     title = f"{SITE['name']} — Free New Pet Checklists (Printable)"
     desc = SITE["description"]
+    total = len(SPECIES) * len(CATEGORIES)
+    home_disclosure = ""
+    if any_affiliate_links():
+        home_disclosure = f'\n      <p class="disclosure home-disclosure">{AFFILIATE_DISCLOSURE}</p>'
     html = base_head(title, desc, "/") + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
 
   <section class="hero">
-    <div class="wrap">
-      <p class="eyebrow">Free printable checklists for new pet parents</p>
-      <h1>Bring them home ready, not scrambling.</h1>
-      <p class="lede">Whatever's joining your family — dog, cat, rabbit, guinea pig, or bird — get the first week, the shopping list, the first vet visit, and the home safety walk-through in one place.</p>
-      <div class="hero-actions">
-        <a class="btn" href="#finder">Find your checklist</a>
-        <p class="fine-print">Free. No account. No email.</p>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Free printable checklists for new pet parents</p>
+        <h1>Bring them home ready, not scrambling.</h1>
+        <p class="lede">{total} free checklists for dogs, cats, rabbits &amp; guinea pigs, and birds: the first week, the shopping list, the first vet visit, and a home safety walk-through.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#finder">Browse all {total} checklists</a>
+        </div>
+        <ul class="trust-list">
+          <li>Printable PDF + fill-in-online version</li>
+          <li>No account, no email</li>
+          <li>Progress saves on your device</li>
+        </ul>
       </div>
+      <div class="pet-picker">
+        <p class="picker-title">Who's coming home?</p>
+        <ul class="picker-grid">
+          {build_pet_picker()}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="finder" id="finder">
+    <div class="wrap">
+      <h2>Find your checklist</h2>
+      <p class="finder-intro">Four checklists for each pet. Download the PDF to print, or fill it in online and check items off on your phone.</p>
+      <nav class="pet-jump" aria-label="Jump to a pet">
+        {build_pet_jump()}
+      </nav>
+
+{build_pet_panels()}{home_disclosure}
+    </div>
+  </section>
+
+  <section class="support" aria-labelledby="support-title">
+    <div class="wrap">
+    {support_card("support-title", "Keep Welcome Home free", "No ads, no email wall, no paywall. If a checklist made pickup day easier, a coffee helps keep every checklist free for the next new pet parent.")}
     </div>
   </section>
 
   <section class="steps" id="how">
     <div class="wrap">
-      <h2>How it helps</h2>
+      <h2>How it works</h2>
       <ol class="step-list">
         <li>
           <p class="step-num">1</p>
@@ -141,18 +237,6 @@ def build_index():
           <p>Print it, or check items off on your phone as you go. Either way, less scrambling on day one.</p>
         </li>
       </ol>
-    </div>
-  </section>
-
-  <section class="finder" id="finder">
-    <div class="wrap">
-      <h2>Find a checklist</h2>
-      <p>Filter by pet, or browse everything below. Every checklist comes as a printable PDF and an accessible web worksheet.</p>
-      <ul class="species-tabs">
-      {build_species_tabs()}
-      </ul>
-
-{build_category_blocks()}
     </div>
   </section>
 
@@ -178,12 +262,48 @@ def build_index():
 # Worksheet pages
 # ---------------------------------------------------------------------------
 
+def build_next_up(sp_key, cat_key):
+    sp = SPECIES[sp_key]
+    items = []
+    for other_key, other in CATEGORIES_SORTED:
+        if other_key == cat_key:
+            continue
+        items.append(f"""        <li>
+          <a class="next-title" href="{worksheet_href(sp_key, other_key)}">{other['title']}</a>
+          <span class="next-desc">{other['desc']}</span>
+          <a class="next-pdf" href="{pdf_href(sp_key, other_key)}">↓ PDF<span class="sr-only">: {sp['label']} {other['short']}</span></a>
+        </li>""")
+    return "\n".join(items)
+
+
+def build_shop_box(sp_key, cat_key):
+    if cat_key != "supplies":
+        return ""
+    links = affiliate_links(sp_key)
+    if not links:
+        # Hidden slot: renders only once a real affiliate URL is set in data.py.
+        return "      <!-- Shop-this-list slot: add real affiliate URLs in scripts/data.py AFFILIATE_LINKS to show it. -->\n"
+    buttons = "\n".join(
+        f'          <a class="btn btn-ghost" href="{url}" target="_blank" rel="sponsored noopener">Shop on {name} <span aria-hidden="true">↗</span></a>'
+        for name, url in links
+    )
+    return f"""      <aside class="shop-box" aria-labelledby="shop-title">
+        <h2 id="shop-title">Shop this list</h2>
+        <p>Missing a few things? Pick up the basics for your {SPECIES[sp_key]['label'].lower()} in one go.</p>
+        <div class="shop-links">
+{buttons}
+        </div>
+        <p class="disclosure">{AFFILIATE_DISCLOSURE}</p>
+      </aside>
+"""
+
+
 def build_worksheet(sp_key, cat_key):
     sp = SPECIES[sp_key]
     cat = CATEGORIES[cat_key]
     sections = CHECKLISTS[(sp_key, cat_key)]
     slug = f"{sp_key}-{cat_key}"
-    pdf_href = f"/downloads/{slug}-checklist.pdf"
+    pdf = pdf_href(sp_key, cat_key)
     title = f"{cat['title']} for {sp['label']} | {SITE['name']}"
     desc = f"Free accessible web worksheet: {cat['desc']} Built for {sp['label'].lower()}. Also available as a printable PDF."
 
@@ -207,22 +327,28 @@ def build_worksheet(sp_key, cat_key):
       </ul>
     </div>""")
 
+    sister = ""
+    if cat_key == "vet-visit":
+        sister = f"""
+      <p class="sister-note">After the first visit, keep weight, meds, and symptoms in one place with <a href="{SISTER_SITE['url']}" target="_blank" rel="noopener">{SISTER_SITE['name']}</a> — free printable pet health trackers.</p>"""
+
     html = base_head(title, desc, f"/checklists/{slug}.html") + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
   <div class="worksheet-header">
     <div class="wrap">
-      <p class="crumb"><a href="/#{cat_key}">{SITE['name']}</a> / {cat['short']} / {sp['label']}</p>
+      <p class="crumb"><a href="/#finder">All checklists</a> / <a href="/#pet-{sp_key}">{sp['label']}</a> / {cat['short']}</p>
       <h1>{cat['title']}</h1>
-      <p class="sub">For {sp['label']}. {cat['desc']}</p>
+      <p class="sub"><span aria-hidden="true">{sp['emoji']}</span> For {sp['label']}. {cat['desc']}</p>
       <div class="worksheet-actions">
-        <a class="btn" href="{pdf_href}">Download printable PDF</a>
-        <a class="btn btn-ghost" href="/#finder">See other checklists</a>
+        <a class="btn" href="{pdf}">↓ Download printable PDF</a>
+        <button type="button" class="btn btn-ghost" data-print hidden>Print</button>
       </div>
+      <p class="action-note">Free · {total_items} items · or check them off below. Everything you enter stays on this device.</p>
       <div class="pet-fields">
         <div>
-          <label for="pet-name">Pet's name (stays on your device)</label>
+          <label for="pet-name">Pet's name</label>
           <input type="text" id="pet-name" autocomplete="off">
         </div>
         <div>
@@ -235,13 +361,26 @@ def build_worksheet(sp_key, cat_key):
 
   <div class="worksheet-body">
     <div class="wrap" data-worksheet-id="{slug}">
-      <p class="progress-note"><strong data-progress>0 of {total_items} done</strong> — checked items are saved on this device only.</p>
+      <div class="progress-box">
+        <p class="progress-note"><strong data-progress>0 of {total_items} done</strong> — checked items are saved on this device only.</p>
+        <div class="progress-track" aria-hidden="true"><span data-progress-bar></span></div>
+      </div>
 
 {chr(10).join(section_blocks)}
 
-      <p class="reset-row"><button type="button" data-reset>Clear this worksheet</button></p>
+{build_shop_box(sp_key, cat_key)}      <p class="reset-row"><button type="button" data-reset>Clear this worksheet</button></p>
     </div>
   </div>
+
+  <section class="next-up" aria-labelledby="next-title">
+    <div class="wrap">
+      {support_card("finish-title", "Finished? Keep these checklists free", "No ads, no email wall. If this checklist helped you get ready, a coffee keeps Welcome Home free for the next new pet parent.")}
+      <h2 id="next-title">More {sp['label'].lower()} checklists</h2>
+      <ul class="next-list">
+{build_next_up(sp_key, cat_key)}
+      </ul>{sister}
+    </div>
+  </section>
 </main>
 {footer_html()}
 <script src="/assets/site.js"></script>
@@ -271,7 +410,7 @@ def build_accessibility():
       <li>Every printable checklist has a matching web worksheet built from real HTML checkboxes and labels, readable by screen readers and operable by keyboard.</li>
       <li>Color is never the only signal — checked items also get a line-through and a status count.</li>
       <li>Text and interactive elements meet WCAG AA contrast against the page background.</li>
-      <li>The site works, and every PDF can still be downloaded, with JavaScript turned off. JavaScript only adds checkbox-saving and the pet-species filter.</li>
+      <li>The site works, and every PDF can still be downloaded, with JavaScript turned off. JavaScript only adds checkbox-saving, the progress bar, and the print button.</li>
       <li>Layout is responsive from small phones up to wide desktop screens.</li>
     </ul>
     <h2>Something not working for you?</h2>
@@ -287,6 +426,11 @@ def build_accessibility():
 
 
 def build_privacy():
+    affiliate_note = ""
+    if any_affiliate_links():
+        affiliate_note = f"""    <h2>Affiliate links</h2>
+    <p>Some supply-list pages include "Shop this list" affiliate links to pet stores. {AFFILIATE_TERMS} Those stores have their own privacy policies once you leave this site.</p>
+"""
     title = f"Privacy | {SITE['name']}"
     desc = "Privacy information for Welcome Home's free pet checklist printables."
     html = base_head(title, desc, "/privacy.html") + f"""<body>
@@ -298,7 +442,7 @@ def build_privacy():
     <p>{SITE['name']} does not ask for an account or an email address, and does not run visitor tracking or advertising scripts.</p>
     <h2>What's stored, and where</h2>
     <p>When you check off items on a web worksheet, or type your pet's name and the date they came home, that's saved using your browser's local storage — on your device only. It is never sent to a server, and clearing your browser data will remove it.</p>
-    <h2>Hosting</h2>
+{affiliate_note}    <h2>Hosting</h2>
     <p>This site is static and hosted on Netlify. Netlify may log basic, aggregate technical request data (like any web host) to keep the service running; Welcome Home itself does not add any additional analytics.</p>
   </section>
 </main>
@@ -307,6 +451,27 @@ def build_privacy():
 </html>
 """
     with open(os.path.join(SITE_DIR, "privacy.html"), "w") as f:
+        f.write(html)
+
+
+def build_404():
+    title = f"Page Not Found | {SITE['name']}"
+    desc = "That Welcome Home pet checklist page could not be found. Browse the free new pet checklists instead."
+    html = base_head(title, desc, "/404.html") + f"""<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+{header_html()}
+<main id="main">
+  <section class="simple-page">
+    <h1>That page wandered off.</h1>
+    <p>The checklist or page you tried to open is not here.</p>
+    <p><a class="btn" href="/#finder">Browse all pet checklists</a></p>
+  </section>
+</main>
+{footer_html()}
+</body>
+</html>
+"""
+    with open(os.path.join(SITE_DIR, "404.html"), "w") as f:
         f.write(html)
 
 
@@ -336,6 +501,7 @@ def main():
             build_worksheet(sp_key, cat_key)
     build_accessibility()
     build_privacy()
+    build_404()
     build_robots_and_sitemap()
     print("Site generated in", SITE_DIR)
 

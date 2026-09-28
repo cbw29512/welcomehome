@@ -72,6 +72,33 @@ CATEGORIES = {
 }
 
 # ---------------------------------------------------------------------------
+# Optional pet-supply affiliate links ("Shop this list" on the supply pages).
+# Every slot stays hidden until a real https:// URL is filled in, so nothing
+# is published until Chris adds his own tracked links. Never put placeholder
+# or guessed URLs here.
+# TODO(Chris): paste your Amazon Associates / Chewy affiliate URLs below
+# (one per pet, e.g. an Amazon idea list or a Chewy category link with your tag).
+# ---------------------------------------------------------------------------
+
+AFFILIATE_LINKS = {
+    "dog":         {"amazon": "", "chewy": ""},
+    "cat":         {"amazon": "", "chewy": ""},
+    "small-furry": {"amazon": "", "chewy": ""},
+    "bird":        {"amazon": "", "chewy": ""},
+}
+
+AFFILIATE_STORES = {
+    "amazon": "Amazon",
+    "chewy": "Chewy",
+}
+
+# Sister site, cross-linked from the first-vet-visit worksheets.
+SISTER_SITE = {
+    "name": "Your Pet's Health Log",
+    "url": "https://yourpetshealthlog.netlify.app/",
+}
+
+# ---------------------------------------------------------------------------
 # Checklist items. Each is a list of (section_heading, [items]) tuples so the
 # PDF and web worksheet can both group items under short headers.
 # ---------------------------------------------------------------------------

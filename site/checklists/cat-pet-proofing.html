@@ -20,27 +20,28 @@
   <div class="wrap">
     <a class="brand" href="/"><span class="tag-mark" aria-hidden="true"></span>Welcome Home</a>
     <nav class="site-nav" aria-label="Primary">
-      <a href="/#finder">Find a checklist</a>
-      <a href="/#how">How it helps</a>
+      <a href="/#finder">All checklists</a>
+      <a href="/#how">How it works</a>
       <a href="/#safety">Care &amp; safety</a>
     </nav>
-    <a class="coffee-link" href="https://buymeacoffee.com/divclass016" target="_blank" rel="noopener">Buy me a coffee</a>
+    <a class="coffee-link" href="https://buymeacoffee.com/divclass016" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
   </div>
 </header>
 
 <main id="main">
   <div class="worksheet-header">
     <div class="wrap">
-      <p class="crumb"><a href="/#pet-proofing">Welcome Home</a> / Home safety walk-through / Cat</p>
+      <p class="crumb"><a href="/#finder">All checklists</a> / <a href="/#pet-cat">Cat</a> / Home safety walk-through</p>
       <h1>Home Safety Checklist</h1>
-      <p class="sub">For Cat. A room-by-room pass to make your home safer before they arrive.</p>
+      <p class="sub"><span aria-hidden="true">🐱</span> For Cat. A room-by-room pass to make your home safer before they arrive.</p>
       <div class="worksheet-actions">
-        <a class="btn" href="/downloads/cat-pet-proofing-checklist.pdf">Download printable PDF</a>
-        <a class="btn btn-ghost" href="/#finder">See other checklists</a>
+        <a class="btn" href="/downloads/cat-pet-proofing-checklist.pdf">↓ Download printable PDF</a>
+        <button type="button" class="btn btn-ghost" data-print hidden>Print</button>
       </div>
+      <p class="action-note">Free · 12 items · or check them off below. Everything you enter stays on this device.</p>
       <div class="pet-fields">
         <div>
-          <label for="pet-name">Pet's name (stays on your device)</label>
+          <label for="pet-name">Pet's name</label>
           <input type="text" id="pet-name" autocomplete="off">
         </div>
         <div>
@@ -53,7 +54,10 @@
 
   <div class="worksheet-body">
     <div class="wrap" data-worksheet-id="cat-pet-proofing">
-      <p class="progress-note"><strong data-progress>0 of 12 done</strong> — checked items are saved on this device only.</p>
+      <div class="progress-box">
+        <p class="progress-note"><strong data-progress>0 of 12 done</strong> — checked items are saved on this device only.</p>
+        <div class="progress-track" aria-hidden="true"><span data-progress-bar></span></div>
+      </div>
 
     <div class="section-block">
       <h2>Kitchen</h2>
@@ -127,6 +131,36 @@
       <p class="reset-row"><button type="button" data-reset>Clear this worksheet</button></p>
     </div>
   </div>
+
+  <section class="next-up" aria-labelledby="next-title">
+    <div class="wrap">
+      <div class="support-card">
+      <div>
+        <h2 id="finish-title">Finished? Keep these checklists free</h2>
+        <p>No ads, no email wall. If this checklist helped you get ready, a coffee keeps Welcome Home free for the next new pet parent.</p>
+      </div>
+      <a class="coffee-link coffee-lg" href="https://buymeacoffee.com/divclass016" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+    </div>
+      <h2 id="next-title">More cat checklists</h2>
+      <ul class="next-list">
+        <li>
+          <a class="next-title" href="/checklists/cat-first-week.html">First Week Home Checklist</a>
+          <span class="next-desc">Day-by-day settle-in tasks so the first week feels calm instead of chaotic.</span>
+          <a class="next-pdf" href="/downloads/cat-first-week-checklist.pdf">↓ PDF<span class="sr-only">: Cat First week home</span></a>
+        </li>
+        <li>
+          <a class="next-title" href="/checklists/cat-supplies.html">New Pet Supply Shopping List</a>
+          <span class="next-desc">Everything to have ready before, or right after, pickup day.</span>
+          <a class="next-pdf" href="/downloads/cat-supplies-checklist.pdf">↓ PDF<span class="sr-only">: Cat Supply shopping list</span></a>
+        </li>
+        <li>
+          <a class="next-title" href="/checklists/cat-vet-visit.html">First Vet Visit Prep Sheet</a>
+          <span class="next-desc">What to bring and what to ask at their first checkup.</span>
+          <a class="next-pdf" href="/downloads/cat-vet-visit-checklist.pdf">↓ PDF<span class="sr-only">: Cat First vet visit prep</span></a>
+        </li>
+      </ul>
+    </div>
+  </section>
 </main>
 <footer class="site-footer">
   <div class="wrap">

@@ -180,6 +180,23 @@ a:hover{ color: var(--ink); }
 .handoff .handoff-action{ margin: 0 0 .6rem; }
 .handoff .fine-print{ margin: 0; }
 
+.faq{ padding: 1.4rem 0 .6rem; }
+.faq h2{ font-family: var(--serif); font-weight: 700; font-size: 1.7rem; margin: 0 0 1.2rem; }
+.faq-list{ display:grid; gap: .8rem; }
+.faq-item{
+  background: var(--paper-raised); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 1.1rem 1.1rem 1.2rem; box-shadow: var(--shadow);
+}
+.faq-item h3{ font-size: 1.1rem; margin: 0 0 .4rem; }
+.faq-item p{ font-size: 1rem; color: var(--ink-soft); margin: 0; max-width: 68ch; }
+
+.sibling-links{ margin: 1.4rem 0 0; }
+.sibling-links h2{ font-family: var(--serif); font-size: 1.2rem; margin: 0 0 .5rem; }
+.sibling-links ul{ list-style:none; margin:0; padding:0; display:grid; gap:.3rem; }
+.sibling-links a{
+  display:inline-flex; align-items:center; min-height: 44px; font-size: 1rem;
+}
+
 .support{ padding: 1.6rem 0 0; }
 .support p{ font-size: 1rem; color: var(--ink-soft); margin: 0; max-width: 62ch; }
 
@@ -266,10 +283,12 @@ a:hover{ color: var(--ink); }
   .checklist-links{ gap: .5rem; }
   .checklist-links a{ flex: 1 1 calc(50% - .3rem); }
   .handoff-card .btn, .worksheet-next .btn{ width: 100%; }
-  .worksheet-header .wrap{ padding-left: 1rem; padding-right: 1rem; }
-  .worksheet-actions .btn{ width: 100%; }
-  .pet-fields{ gap: .8rem; }
-  .pet-fields > div{ width: 100%; }
+  .worksheet-header .wrap{ padding: 1.1rem 1rem 1.2rem; }
+  /* Keep the first checklist items near the top of a phone screen. */
+  .worksheet-actions{ gap: .2rem 1rem; }
+  .pet-fields{ gap: .6rem; margin-top: .9rem; flex-wrap: nowrap; }
+  .pet-fields > div{ flex: 1 1 50%; min-width: 0; }
   .pet-fields input{ width:100%; min-width:0; }
+  .worksheet-body{ padding: 1.2rem 0 2.4rem; }
 }
 @media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }

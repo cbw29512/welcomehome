@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Generate the Welcome Home static site (index + worksheet pages + utility pages)."""
+import datetime
+import json
 import os
-from data import SITE, SPECIES, CATEGORIES, CHECKLISTS
+from data import SITE, SPECIES, CATEGORIES, CHECKLISTS, FAQ
 
 SITE_DIR = os.path.join(os.path.dirname(__file__), "..", "site")
 CHECKLISTS_DIR = os.path.join(SITE_DIR, "checklists")
@@ -10,8 +12,42 @@ os.makedirs(CHECKLISTS_DIR, exist_ok=True)
 SPECIES_SORTED = sorted(SPECIES.items(), key=lambda kv: kv[1]["sort"])
 CATEGORIES_SORTED = sorted(CATEGORIES.items(), key=lambda kv: kv[1]["sort"])
 
+INDEX_ROBOTS = "index, follow, max-image-preview:large"
 
-def base_head(title, description, canonical_path):
+
+def website_node():
+    return {
+        "@type": "WebSite",
+        "name": SITE["name"],
+        "url": SITE["url"] + "/",
+        "description": SITE["description"],
+    }
+
+
+def breadcrumb_node(trail):
+    return {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": pos, "name": name, "item": url}
+            for pos, (name, url) in enumerate(trail, start=1)
+        ],
+    }
+
+
+def page_node(title, description, canonical_path, extra=None):
+    node = {
+        "@type": "WebPage",
+        "name": title,
+        "description": description,
+        "url": SITE["url"] + canonical_path,
+        "isPartOf": website_node(),
+    }
+    node.update(extra or {})
+    return node
+
+
+def base_head(title, description, canonical_path, schema, robots=INDEX_ROBOTS):
+    payload = json.dumps(schema, ensure_ascii=False, separators=(",", ":"))
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,13 +56,20 @@ def base_head(title, description, canonical_path):
 <title>{title}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{SITE['url']}{canonical_path}">
+<meta name="robots" content="{robots}">
 <meta name="theme-color" content="{SITE['color']}">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{SITE['url']}{canonical_path}">
+<meta property="og:site_name" content="{SITE['name']}">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{title}">
+<meta name="twitter:description" content="{description}">
 <link rel="stylesheet" href="/assets/style.css">
+<script type="application/ld+json">{payload}</script>
 </head>
 """
 
@@ -115,8 +158,8 @@ def build_category_blocks():
           <p class="what">{preview}, and more.</p>
         </div>
         <div class="checklist-links">
-          <a class="web" href="{worksheet_href}">Open checklist</a>
-          <a class="pdf" href="{pdf_href}">Printable PDF</a>
+          <a class="web" href="{worksheet_href}" aria-label="Open the {sp['label']} {cat['heading']}">Open checklist</a>
+          <a class="pdf" href="{pdf_href}" aria-label="Download the printable {sp['label']} {cat['heading']} PDF">Printable PDF</a>
         </div>
       </div>""")
         blocks.append(f"""  <div class="category-block" id="{cat_key}">
@@ -127,22 +170,88 @@ def build_category_blocks():
     return "\n\n".join(blocks)
 
 
+def build_faq_blocks():
+    blocks = []
+    for entry in FAQ:
+        answer = entry["a"]
+        if entry.get("link") == "health_log":
+            answer = answer.replace(
+                "Your Pet's Health Log",
+                f'<a href="{SITE["health_log_url"]}">Your Pet\'s Health Log</a>',
+                1,
+            )
+        blocks.append(f"""        <div class="faq-item">
+          <h3>{entry['q']}</h3>
+          <p>{answer}</p>
+        </div>""")
+    return "\n".join(blocks)
+
+
+def index_schema(title, desc):
+    return {
+        "@context": "https://schema.org",
+        "@graph": [
+            website_node(),
+            {
+                "@type": "CollectionPage",
+                "name": title,
+                "description": desc,
+                "url": SITE["url"] + "/",
+                "isPartOf": website_node(),
+                "about": [
+                    {"@type": "Thing", "name": f"{sp['label']} care checklists"}
+                    for _, sp in SPECIES_SORTED
+                ],
+                "hasPart": [
+                    {
+                        "@type": "ItemList",
+                        "name": cat["title"],
+                        "description": cat["desc"],
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": pos,
+                                "name": f"{sp['label']} {cat['heading']}",
+                                "url": f"{SITE['url']}/checklists/{sp_key}-{cat_key}.html",
+                            }
+                            for pos, (sp_key, sp) in enumerate(SPECIES_SORTED, start=1)
+                        ],
+                    }
+                    for cat_key, cat in CATEGORIES_SORTED
+                ],
+            },
+            {
+                "@type": "FAQPage",
+                "url": SITE["url"] + "/#faq",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": entry["q"],
+                        "acceptedAnswer": {"@type": "Answer", "text": entry["a"]},
+                    }
+                    for entry in FAQ
+                ],
+            },
+        ],
+    }
+
+
 def build_index():
-    title = f"{SITE['name']} — Free New Pet Checklists (Printable)"
+    title = f"Free New Pet Checklists (Printable PDF) | {SITE['name']}"
     desc = SITE["description"]
-    html = base_head(title, desc, "/") + f"""<body>
+    html = base_head(title, desc, "/", index_schema(title, desc)) + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
 
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Free printable pet checklists</p>
-      <h1>Bring them home ready, not scrambling.</h1>
-      <p class="lede">Dog, cat, rabbit, guinea pig, or bird — the first week, the supply list, the first vet visit, and the home safety pass, all in one place.</p>
+      <p class="eyebrow">Printable PDFs and phone worksheets</p>
+      <h1>Free new pet checklists for the first week home.</h1>
+      <p class="lede">Bring them home ready, not scrambling — whether it's a dog, cat, rabbit, guinea pig, or bird.</p>
       <div class="hero-actions">
         <a class="btn btn-lg" href="#finder">Get your free checklist</a>
-        <p class="fine-print">Free. No account. No email. Works on your phone.</p>
+        <p class="fine-print">Free. No account. No email.</p>
       </div>
       <p class="hero-aside">Already settled in? <a href="{SITE['health_log_url']}">Open the free health log</a> to track weights, vet visits, and meds.</p>
     </div>
@@ -184,6 +293,15 @@ def build_index():
     </div>
   </section>
 
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <h2>Common questions</h2>
+      <div class="faq-list">
+{build_faq_blocks()}
+      </div>
+    </div>
+  </section>
+
   <section class="safety" id="safety">
     <div class="wrap">
       <h2>Before you print: a quick note</h2>
@@ -207,20 +325,85 @@ def build_index():
 # Worksheet pages
 # ---------------------------------------------------------------------------
 
+def worksheet_meta(sp_key, cat_key):
+    """Title, H1 and meta description for one checklist page, species named first."""
+    sp = SPECIES[sp_key]
+    cat = CATEGORIES[cat_key]
+    heading = f"{sp['label']} {cat['heading']}"
+    title = f"Free {sp['label']} {cat['seo']} | {SITE['name']}"
+    desc = (
+        f"Free {sp['search']} {cat['seo'].lower()}: {cat['meta']}. "
+        f"Tick it off on your phone or print the PDF."
+    )
+    return title, heading, desc
+
+
+def build_sibling_links(sp_key, cat_key):
+    sp = SPECIES[sp_key]
+    links = []
+    for other_key, other in CATEGORIES_SORTED:
+        if other_key == cat_key:
+            continue
+        links.append(
+            f'        <li><a href="/checklists/{sp_key}-{other_key}.html">'
+            f"{sp['label']} {other['heading']}</a></li>"
+        )
+    return f"""      <nav class="sibling-links" aria-label="More {sp['label']} checklists">
+        <h2>More free {sp['label'].lower()} checklists</h2>
+        <ul>
+{chr(10).join(links)}
+        </ul>
+      </nav>"""
+
+
+def worksheet_schema(sp_key, cat_key, title, desc, canonical_path, items):
+    sp = SPECIES[sp_key]
+    cat = CATEGORIES[cat_key]
+    return {
+        "@context": "https://schema.org",
+        "@graph": [
+            page_node(
+                title,
+                desc,
+                canonical_path,
+                {
+                    "breadcrumb": breadcrumb_node(
+                        [
+                            (SITE["name"], SITE["url"] + "/"),
+                            (cat["title"], f"{SITE['url']}/#{cat_key}"),
+                            (f"{sp['label']} {cat['heading']}", SITE["url"] + canonical_path),
+                        ]
+                    ),
+                    "mainEntity": {
+                        "@type": "ItemList",
+                        "name": f"{sp['label']} {cat['heading']}",
+                        "numberOfItems": len(items),
+                        "itemListElement": [
+                            {"@type": "ListItem", "position": pos, "name": item}
+                            for pos, item in enumerate(items, start=1)
+                        ],
+                    },
+                },
+            ),
+        ],
+    }
+
+
 def build_worksheet(sp_key, cat_key):
     sp = SPECIES[sp_key]
     cat = CATEGORIES[cat_key]
     sections = CHECKLISTS[(sp_key, cat_key)]
     slug = f"{sp_key}-{cat_key}"
     pdf_href = f"/downloads/{slug}-checklist.pdf"
-    title = f"{cat['title']} for {sp['label']} | {SITE['name']}"
-    desc = f"Free accessible web worksheet: {cat['desc']} Built for {sp['label'].lower()}. Also available as a printable PDF."
+    canonical_path = f"/checklists/{slug}.html"
+    title, heading, desc = worksheet_meta(sp_key, cat_key)
+    all_items = [item for _, items in sections for item in items]
 
     total_items = sum(len(items) for _, items in sections)
 
     section_blocks = []
     idx = 0
-    for heading, items in sections:
+    for section_heading, items in sections:
         lis = []
         for item in items:
             idx += 1
@@ -230,29 +413,32 @@ def build_worksheet(sp_key, cat_key):
         <label for="{cid}">{item}</label>
       </li>""")
         section_blocks.append(f"""    <div class="section-block">
-      <h2>{heading}</h2>
+      <h2>{section_heading}</h2>
       <ul class="check-list">
 {chr(10).join(lis)}
       </ul>
     </div>""")
 
-    html = base_head(title, desc, f"/checklists/{slug}.html") + f"""<body>
+    schema = worksheet_schema(sp_key, cat_key, title, desc, canonical_path, all_items)
+    html = base_head(title, desc, canonical_path, schema) + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
   <div class="worksheet-header">
     <div class="wrap">
-      <p class="crumb"><a href="/#{cat_key}">{SITE['name']}</a> / {cat['short']} / {sp['label']}</p>
-      <h1>{cat['title']}</h1>
-      <p class="sub">For {sp['label']}. {cat['desc']}</p>
-      <p class="worksheet-hint">Tap an item to check it off. Your progress saves on this device — no account needed.</p>
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href="/">{SITE['name']}</a> / <a href="/#{cat_key}">{cat['short']}</a> / {sp['label']}
+      </nav>
+      <h1>{heading}</h1>
+      <p class="sub">{cat['desc']} Written for {sp['search']} owners, free to print or use on your phone.</p>
+      <p class="worksheet-hint">Tap an item to check it off — progress saves on this device.</p>
       <div class="worksheet-actions">
         <a class="btn btn-ghost" href="{pdf_href}">Download printable PDF</a>
         <a class="text-link" href="/#finder">See other checklists</a>
       </div>
       <div class="pet-fields">
         <div>
-          <label for="pet-name">Pet's name (stays on your device)</label>
+          <label for="pet-name">Pet's name</label>
           <input type="text" id="pet-name" autocomplete="off">
         </div>
         <div>
@@ -273,9 +459,11 @@ def build_worksheet(sp_key, cat_key):
 
       <div class="worksheet-next">
         <h2>Once the first week is behind you</h2>
-        <p>Weights, vet visits, medications, and questions for the next appointment all live in Your Pet's Health Log — the free companion site.</p>
+        <p>Weights, vet visits, medications, and questions for the next appointment all live in <a href="{SITE['health_log_url']}">Your Pet's Health Log</a> — the free companion site, no account needed.</p>
         <p><a class="btn btn-ghost" href="{SITE['health_log_url']}">Open the free health log</a></p>
       </div>
+
+{build_sibling_links(sp_key, cat_key)}
     </div>
   </div>
 </main>
@@ -294,8 +482,10 @@ def build_worksheet(sp_key, cat_key):
 
 def build_accessibility():
     title = f"Accessibility | {SITE['name']}"
-    desc = "Accessibility statement for Welcome Home's free pet checklist printables and web worksheets."
-    html = base_head(title, desc, "/accessibility.html") + f"""<body>
+    desc = ("Accessibility statement for Welcome Home: every free pet checklist works "
+            "with a screen reader, a keyboard, JavaScript off, and on a phone.")
+    html = base_head(title, desc, "/accessibility.html",
+                     page_node(title, desc, "/accessibility.html")) + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
@@ -324,8 +514,10 @@ def build_accessibility():
 
 def build_privacy():
     title = f"Privacy | {SITE['name']}"
-    desc = "Privacy information for Welcome Home's free pet checklist printables."
-    html = base_head(title, desc, "/privacy.html") + f"""<body>
+    desc = ("How Welcome Home handles your data: no account, no email, no tracking "
+            "scripts, and checked checklist items stay in your own browser.")
+    html = base_head(title, desc, "/privacy.html",
+                     page_node(title, desc, "/privacy.html")) + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
@@ -348,8 +540,10 @@ def build_privacy():
 
 def build_terms():
     title = f"Terms | {SITE['name']}"
-    desc = "Terms for Welcome Home's free pet checklists and optional support."
-    html = base_head(title, desc, "/terms.html") + f"""<body>
+    desc = ("Terms for Welcome Home: every pet checklist is free to print and use, "
+            "support is optional, and nothing here replaces veterinary advice.")
+    html = base_head(title, desc, "/terms.html",
+                     page_node(title, desc, "/terms.html")) + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
@@ -376,7 +570,9 @@ def build_terms():
 def build_404():
     title = f"Page Not Found | {SITE['name']}"
     desc = "That Welcome Home pet checklist page could not be found. Browse the free new pet checklists instead."
-    html = base_head(title, desc, "/404.html") + f"""<body>
+    html = base_head(title, desc, "/404.html",
+                     page_node(title, desc, "/404.html"),
+                     robots="noindex, follow") + f"""<body>
 <a class="skip-link" href="#main">Skip to main content</a>
 {header_html()}
 <main id="main">
@@ -396,14 +592,26 @@ def build_404():
 
 def build_robots_and_sitemap():
     with open(os.path.join(SITE_DIR, "robots.txt"), "w") as f:
-        f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE['url']}/sitemap.xml\n")
+        f.write(
+            "User-agent: *\n"
+            "Allow: /\n"
+            "Disallow: /404.html\n"
+            f"Sitemap: {SITE['url']}/sitemap.xml\n"
+        )
 
-    urls = ["/", "/accessibility.html", "/privacy.html", "/terms.html"]
-    for sp_key in SPECIES:
-        for cat_key in CATEGORIES:
-            urls.append(f"/checklists/{sp_key}-{cat_key}.html")
+    today = datetime.date.today().isoformat()
+    # Checklist pages are the pages meant to rank, so they lead the sitemap.
+    urls = [("/", "1.0")]
+    for sp_key, _ in SPECIES_SORTED:
+        for cat_key, _ in CATEGORIES_SORTED:
+            urls.append((f"/checklists/{sp_key}-{cat_key}.html", "0.8"))
+    urls += [("/accessibility.html", "0.3"), ("/privacy.html", "0.3"), ("/terms.html", "0.3")]
 
-    items = "\n".join(f"  <url><loc>{SITE['url']}{u}</loc></url>" for u in urls)
+    items = "\n".join(
+        f"  <url><loc>{SITE['url']}{path}</loc>"
+        f"<lastmod>{today}</lastmod><priority>{priority}</priority></url>"
+        for path, priority in urls
+    )
     sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {items}

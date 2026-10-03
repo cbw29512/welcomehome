@@ -7,69 +7,126 @@ Each species has 4 checklists: first-week, supplies, vet-visit, pet-proofing.
 SITE = {
     "name": "Welcome Home",
     "tagline": "Free checklists for the first days with a new pet.",
-    "description": "Free printable checklists for new pet parents. First week plans, "
-                   "supply lists, first vet visit prep, and home safety walk-throughs "
-                   "for dogs, cats, rabbits, guinea pigs, and birds. No account, no email.",
+    "description": "Free printable new pet checklists for dogs, cats, rabbits, guinea "
+                   "pigs, and birds: first week home, supply list, first vet visit "
+                   "and home safety. No signup.",
     "url": "https://welcomehomepet.netlify.app",
+    "health_log_url": "https://yourpetshealthlog.netlify.app/",
     "coffee_url": "https://buymeacoffee.com/divclass016",
     "color": "#c1694f",
     "color_dark": "#8f4835",
     "bg": "#faf5ef",
 }
 
+# "search" is the lowercase phrase used inside titles, headings and meta
+# descriptions, so each page targets how people actually type the query.
 SPECIES = {
     "dog": {
         "label": "Dog",
+        "search": "dog",
         "emoji": "🐶",
         "blurb": "Your new best friend",
         "sort": 1,
     },
     "cat": {
         "label": "Cat",
+        "search": "cat",
         "emoji": "🐱",
         "blurb": "Your new independent shadow",
         "sort": 2,
     },
     "small-furry": {
         "label": "Rabbit & Guinea Pig",
+        "search": "rabbit or guinea pig",
         "emoji": "🐰",
         "blurb": "Small pets, big personalities",
         "sort": 3,
     },
     "bird": {
         "label": "Bird",
+        "search": "bird",
         "emoji": "🦜",
         "blurb": "Your new feathered flockmate",
         "sort": 4,
     },
 }
 
+# "seo" keeps page titles short enough to survive a search result; "heading"
+# reads naturally after a species name ("Dog Supply Shopping List").
 CATEGORIES = {
     "first-week": {
         "title": "First Week Home Checklist",
+        "seo": "First Week Checklist",
+        "heading": "First Week Home Checklist",
         "short": "First week home",
         "desc": "Day-by-day settle-in tasks so the first week feels calm instead of chaotic.",
+        "meta": "day-by-day settle-in tasks for the first seven days at home",
         "sort": 1,
     },
     "supplies": {
         "title": "New Pet Supply Shopping List",
+        "seo": "Supply Checklist",
+        "heading": "Supply Shopping List",
         "short": "Supply shopping list",
         "desc": "Everything to have ready before, or right after, pickup day.",
+        "meta": "everything to buy and set up before pickup day",
         "sort": 2,
     },
     "vet-visit": {
         "title": "First Vet Visit Prep Sheet",
+        "seo": "Vet Visit Checklist",
+        "heading": "First Vet Visit Prep",
         "short": "First vet visit prep",
         "desc": "What to bring and what to ask at their first checkup.",
+        "meta": "what to bring and what to ask at the first checkup",
         "sort": 3,
     },
     "pet-proofing": {
         "title": "Home Safety Checklist",
+        "seo": "Home Safety Checklist",
+        "heading": "Home Safety Checklist",
         "short": "Home safety walk-through",
         "desc": "A room-by-room pass to make your home safer before they arrive.",
+        "meta": "a room-by-room pet-proofing pass before they arrive",
         "sort": 4,
     },
 }
+
+# Homepage FAQ. Answers are plain sentences; {health_log} is linked when rendered.
+FAQ = [
+    {
+        "q": "Are these new pet checklists really free?",
+        "a": "Yes. Every checklist on this site is free as a printable PDF and as a "
+             "web worksheet you can tick off on your phone. There is no account, no "
+             "email signup, and no locked version with the good parts in it.",
+    },
+    {
+        "q": "What should I buy before bringing a new pet home?",
+        "a": "Start with the supply shopping list for your species — food and water "
+             "bowls, the right bedding or litter, a carrier or crate, and a few days "
+             "of the food they are already eating so you are not switching diets on "
+             "day one.",
+    },
+    {
+        "q": "What should I do in the first 24 hours with a new pet?",
+        "a": "Keep the world small. Set up one quiet space, show them where food, "
+             "water, and the bathroom are, and let them come to you. The first week "
+             "home checklist breaks the rest of the week down day by day.",
+    },
+    {
+        "q": "How do I keep track of weights, vet visits, and medications?",
+        "a": "That is what the free Your Pet's Health Log is for. Once the first week "
+             "is behind you, it keeps the running record a vet will actually ask you "
+             "about — weights, dates, doses, and questions for the next appointment.",
+        "link": "health_log",
+    },
+    {
+        "q": "Can I use a checklist instead of seeing a vet?",
+        "a": "No. These checklists help you get organized and ask better questions. "
+             "Anything about diet amounts, medication, or a health concern belongs "
+             "with a vet who works with your pet's species.",
+    },
+]
 
 # ---------------------------------------------------------------------------
 # Checklist items. Each is a list of (section_heading, [items]) tuples so the

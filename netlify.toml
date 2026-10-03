@@ -2,6 +2,12 @@
   publish = "site"
   command = "python3 scripts/seo_enhance.py && python3 scripts/qa_site.py"
 
+# Netlify's pretty URLs would serve every page at both /path and /path.html and
+# rewrite internal links to the extension-less form, leaving the canonical and
+# the sitemap pointing somewhere the links don't. One URL per page instead.
+[build.processing.html]
+  pretty_urls = false
+
 [[headers]]
   for = "/*"
   [headers.values]

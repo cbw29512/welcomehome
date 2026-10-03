@@ -1,6 +1,6 @@
 [build]
   publish = "site"
-  command = "python3 scripts/apply_funnel.py && python3 scripts/seo_enhance.py && python3 scripts/qa_site.py"
+  command = "python3 scripts/seo_enhance.py && python3 scripts/qa_site.py"
 
 [[headers]]
   for = "/*"

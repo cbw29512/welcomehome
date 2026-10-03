@@ -48,7 +48,7 @@ a:hover{ color: var(--ink); }
 }
 .site-header .wrap{
   display:flex; align-items:center; justify-content:space-between;
-  padding-top: .85rem; padding-bottom: .85rem; gap: 1rem; flex-wrap: wrap;
+  padding-top: .6rem; padding-bottom: .6rem; gap: .5rem 1rem; flex-wrap: wrap;
 }
 .brand{
   display:flex; align-items:center; gap:.55rem;
@@ -59,44 +59,56 @@ a:hover{ color: var(--ink); }
   width:.7rem; height:.7rem; border-radius: 3px;
   background: var(--marigold); transform: rotate(-8deg);
 }
-.site-nav{ display:flex; gap: 1.1rem; font-size: .92rem; flex-wrap: wrap; }
+.site-nav{ display:flex; gap: .2rem 1.1rem; font-size: 1rem; flex-wrap: wrap; }
 .site-nav a{
   display:inline-flex; align-items:center; min-height: 44px;
   text-decoration:none; color: var(--ink-soft);
 }
 .site-nav a:hover{ color: var(--ink); }
-.coffee-link{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-height: 40px; font-weight:700; font-size: .88rem;
-  padding: .45em 1em; border-radius: 999px;
-  background: var(--ink); color: #fff; text-decoration:none; white-space: nowrap;
-}
-.coffee-link:hover{ background: var(--clay-ink); color:#fff; }
 
-.hero{ padding: 4.2rem 0 2.4rem; }
+/* Support is deliberately a quiet text link, never a button. */
+.support-link{
+  display:inline-flex; align-items:center;
+  min-height: 44px; font-size: 1rem; white-space: nowrap;
+  color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px;
+}
+.support-link:hover{ color: var(--ink); }
+
+.hero{ padding: 2.6rem 0 2rem; }
 .hero .eyebrow{
-  display:inline-block; margin: 0 0 .9rem;
-  font-size: .78rem; letter-spacing: .08em; text-transform: uppercase;
+  display:inline-block; margin: 0 0 .7rem;
+  font-size: 1rem; letter-spacing: .04em; text-transform: uppercase;
   color: var(--marigold-ink); font-weight: 700;
 }
 .hero h1{
   font-family: var(--serif); font-weight: 700;
-  font-size: clamp(2.4rem, 6vw, 4.1rem);
-  line-height: .98; letter-spacing: -.02em;
-  margin: 0 0 1rem; max-width: 12ch;
+  font-size: clamp(2.1rem, 6vw, 4.1rem);
+  line-height: 1.04; letter-spacing: -.02em;
+  margin: 0 0 .9rem; max-width: 13ch;
 }
-.hero p.lede{ font-size: 1.12rem; color: var(--ink-soft); max-width: 42ch; margin: 0 0 1.5rem; }
-.hero-actions{ display:flex; align-items:center; gap:1rem; flex-wrap: wrap; }
+.hero p.lede{ font-size: 1.15rem; color: var(--ink-soft); max-width: 42ch; margin: 0 0 1.4rem; }
+.hero-actions{ display:flex; align-items:center; gap: .8rem 1rem; flex-wrap: wrap; }
+.hero-aside{ font-size: 1rem; color: var(--ink-soft); margin: 1.3rem 0 0; max-width: 46ch; }
 .btn{
-  display:inline-flex; align-items:center; justify-content:center; min-height: 46px;
-  font-weight:700; padding: .7em 1.25em; border-radius: 999px;
+  display:inline-flex; align-items:center; justify-content:center; min-height: 48px;
+  font-size: 1rem; font-weight:700; padding: .7em 1.25em; border-radius: 999px;
   background: var(--clay); color: #fff; text-decoration:none; border: 0;
 }
 .btn:hover{ background: var(--clay-ink); color:#fff; }
-.fine-print{ font-size: .88rem; color: var(--ink-soft); margin: 0; }
+.btn-lg{ min-height: 54px; font-size: 1.1rem; padding: .75em 1.6em; }
+.btn-ghost{
+  background: var(--paper-raised); color: var(--clay-ink);
+  border: 2px solid var(--clay); font-weight: 700;
+}
+.btn-ghost:hover{ background: #fff; color: var(--clay-ink); border-color: var(--clay-ink); }
+.text-link{
+  display:inline-flex; align-items:center; min-height: 44px;
+  font-size: 1rem; color: var(--clay-ink);
+}
+.fine-print{ font-size: 1rem; color: var(--ink-soft); margin: 0; }
 
-.steps{ padding: 1rem 0 2.6rem; }
-.steps h2, .finder h2, .safety h2{
+.steps{ padding: 1.6rem 0 2.6rem; }
+.steps h2, .finder h2, .safety h2, .handoff h2{
   font-family: var(--serif); font-weight: 700; font-size: 1.7rem; margin: 0 0 1.2rem;
 }
 .step-list{
@@ -108,17 +120,17 @@ a:hover{ color: var(--ink); }
   border-radius: var(--radius); padding: 1.1rem 1.1rem 1.2rem; box-shadow: var(--shadow);
 }
 .step-num{ font-family: var(--serif); color: var(--marigold-ink); margin: 0; }
-.step-list h3{ margin: .25rem 0 .35rem; font-size: 1.02rem; }
-.step-list p{ margin:0; color: var(--ink-soft); font-size: .94rem; }
+.step-list h3{ margin: .25rem 0 .35rem; font-size: 1.1rem; }
+.step-list p{ margin:0; color: var(--ink-soft); font-size: 1rem; }
 
 .finder{ padding: 1.2rem 0 1rem; }
-.finder > .wrap > p{ color: var(--ink-soft); margin: 0 0 1.2rem; max-width: 52ch; }
+.finder > .wrap > p{ color: var(--ink-soft); font-size: 1rem; margin: 0 0 1.2rem; max-width: 52ch; }
 .species-tabs{ display:flex; gap:.5rem; flex-wrap: wrap; margin: 0 0 1.6rem; padding:0; list-style:none; }
 .species-tabs button{
-  min-height: 42px; font-weight: 700; font-size: .92rem;
+  min-height: 48px; font-weight: 700; font-size: 1rem;
   background: transparent; color: var(--ink);
   border: 1px solid var(--line); border-radius: 999px;
-  padding: .45em 1em; cursor:pointer;
+  padding: .45em 1.1em; cursor:pointer;
 }
 .species-tabs button[aria-pressed="true"]{ background: var(--ink); color: #fff; border-color: var(--ink); }
 .species-tabs button .em{ margin-right:.35em; }
@@ -131,22 +143,45 @@ a:hover{ color: var(--ink); }
 .category-block h3{
   font-family: var(--serif); font-size: 1.25rem; margin: 0 0 .2rem;
 }
-.category-block > .cat-desc{ color: var(--ink-soft); font-size: .92rem; margin: 0 0 .4rem; }
+.category-block > .cat-desc{ color: var(--ink-soft); font-size: 1rem; margin: 0 0 .4rem; }
 .checklist-row{
   display:flex; align-items:center; justify-content: space-between; gap: 1rem;
   padding: .9rem 0; border-top: 1px solid var(--line); flex-wrap: wrap;
 }
-.checklist-row .who{ font-weight: 700; margin: 0 0 .15rem; }
-.checklist-row .what{ color: var(--ink-soft); font-size: .9rem; margin:0; max-width: 52ch; }
+.checklist-row .who{ font-weight: 700; font-size: 1.05rem; margin: 0 0 .15rem; }
+.checklist-row .what{ color: var(--ink-soft); font-size: 1rem; margin:0; max-width: 52ch; }
 .checklist-links{ display:flex; gap: .5rem; flex-wrap: wrap; }
 .checklist-links a{
-  display:inline-flex; align-items:center; min-height: 40px;
-  text-decoration: none; font-weight: 700; font-size: .88rem;
-  border: 1px solid var(--line); border-radius: 999px; padding: 0 .9rem;
+  display:inline-flex; align-items:center; justify-content:center; min-height: 48px;
+  text-decoration: none; font-weight: 700; font-size: 1rem;
+  border: 1px solid var(--line); border-radius: 999px; padding: 0 1rem;
   background: #fff; color: var(--ink);
 }
-.checklist-links a.pdf{ background: var(--ink); color: #fff; border-color: var(--ink); }
-.checklist-links a.pdf::before{ content: ""; }
+.checklist-links a.web{ background: var(--clay); color: #fff; border-color: var(--clay); }
+.checklist-links a.web:hover{ background: var(--clay-ink); border-color: var(--clay-ink); color:#fff; }
+.checklist-links a.pdf{ color: var(--ink); }
+.checklist-links a.pdf:hover{ border-color: var(--ink); }
+
+/* Free health-log handoff: obvious, but visually secondary to the checklist buttons. */
+.handoff{ padding: 1.4rem 0 0; }
+.handoff-card{
+  background: var(--paper-raised);
+  border: 1px solid var(--line); border-left: 6px solid var(--marigold);
+  border-radius: 18px; box-shadow: var(--shadow);
+  padding: 1.4rem 1.3rem 1.5rem;
+}
+.handoff .eyebrow{
+  display:inline-block; margin: 0 0 .5rem;
+  font-size: 1rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--marigold-ink); font-weight: 700;
+}
+.handoff h2{ font-size: 1.5rem; margin: 0 0 .7rem; max-width: 34ch; }
+.handoff p{ font-size: 1.05rem; color: var(--ink-soft); max-width: 58ch; margin: 0 0 1rem; }
+.handoff .handoff-action{ margin: 0 0 .6rem; }
+.handoff .fine-print{ margin: 0; }
+
+.support{ padding: 1.6rem 0 0; }
+.support p{ font-size: 1rem; color: var(--ink-soft); margin: 0; max-width: 62ch; }
 
 .safety{
   margin: 1.4rem auto 0; max-width: 980px;
@@ -159,32 +194,50 @@ a:hover{ color: var(--ink); }
 
 .site-footer{ padding: 1.8rem 0 2.4rem; }
 .site-footer .wrap{ display:flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-.site-footer p{ margin:0; color: var(--ink-soft); font-size: .9rem; max-width: 42ch; }
+.site-footer p{ margin:0; color: var(--ink-soft); font-size: 1rem; max-width: 42ch; }
 .footer-links{ display:flex; gap: 1rem; flex-wrap:wrap; }
 .footer-links a{ display:inline-flex; align-items:center; min-height: 44px; text-decoration:none; color: var(--ink-soft); }
 
 .worksheet-header{ border-bottom: 1px solid var(--line); background: var(--paper-raised); }
 .worksheet-header .wrap{ padding: 1.5rem 1.5rem 1.3rem; }
-.crumb{ font-size: .88rem; color: var(--ink-soft); margin: 0 0 .5rem; }
-.worksheet-header h1{ font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.2rem); margin: 0 0 .3rem; }
-.worksheet-header .sub{ color: var(--ink-soft); margin: 0 0 1rem; }
-.worksheet-actions{ display:flex; gap: .6rem; flex-wrap: wrap; }
+.crumb{ font-size: 1rem; color: var(--ink-soft); margin: 0 0 .5rem; }
+.worksheet-header h1{ font-family: var(--serif); font-size: clamp(1.7rem, 3.4vw, 2.2rem); margin: 0 0 .3rem; }
+.worksheet-header .sub{ color: var(--ink-soft); font-size: 1.05rem; margin: 0 0 .8rem; }
+.worksheet-hint{ font-size: 1rem; color: var(--ink-soft); margin: 0 0 1rem; max-width: 52ch; }
+.worksheet-actions{ display:flex; align-items:center; gap: .4rem 1rem; flex-wrap: wrap; }
 .pet-fields{ display:flex; gap: 1rem; flex-wrap: wrap; margin: 1.2rem 0 0; }
-.pet-fields label{ font-size: .85rem; color: var(--ink-soft); display:block; margin-bottom:.3rem; }
+.pet-fields label{ font-size: 1rem; color: var(--ink-soft); display:block; margin-bottom:.3rem; }
 .pet-fields input{
-  min-height: 44px; font: inherit; padding: .45em .7em;
+  min-height: 48px; font: inherit; font-size: 1rem; padding: .45em .7em;
   border: 1px solid var(--line); border-radius: 10px; background: #fff; min-width: 220px;
 }
 .worksheet-body{ padding: 1.8rem 0 3rem; }
-.progress-note{ color: var(--ink-soft); font-size: .92rem; }
-.section-block{ margin: 0 0 1.4rem; background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem 1.1rem; }
-.section-block h2{ font-family: var(--serif); font-size: 1.1rem; margin: 0 0 .6rem; color: var(--clay-ink); }
+.progress-note{ color: var(--ink-soft); font-size: 1rem; }
+.section-block{ margin: 0 0 1.4rem; background: var(--paper-raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem .6rem; }
+.section-block h2{ font-family: var(--serif); font-size: 1.2rem; margin: 0 0 .6rem; padding: 0 .5rem; color: var(--clay-ink); }
 .check-list{ list-style:none; margin:0; padding:0; }
-.check-list li{ display:flex; gap: .7rem; padding: .55rem 0; border-top: 1px solid var(--line); }
+.check-list li{ display:flex; align-items: flex-start; border-top: 1px solid var(--line); }
 .check-list li:first-child{ border-top: 0; }
-.check-list input[type="checkbox"]{ width: 1.25rem; height: 1.25rem; margin-top: .15rem; accent-color: var(--clay); }
+.check-list input[type="checkbox"]{
+  width: 1.5rem; height: 1.5rem; margin: .85rem .2rem 0 .4rem;
+  flex: none; accent-color: var(--clay);
+}
+/* The label carries the row padding so a thumb anywhere on the line toggles the item. */
+.check-list label{
+  flex: 1; font-size: 1.05rem; line-height: 1.45;
+  padding: .8rem .5rem .8rem .55rem; cursor: pointer;
+}
 .check-list li.checked label{ color: var(--ink-soft); text-decoration: line-through; }
-.reset-row button{ min-height: 44px; color: var(--clay-ink); background:none; border:0; text-decoration: underline; cursor:pointer; }
+.reset-row button{ min-height: 48px; font-size: 1rem; color: var(--clay-ink); background:none; border:0; text-decoration: underline; cursor:pointer; }
+.worksheet-next{
+  margin: 1.8rem 0 0; padding: 1.3rem 1.3rem 1.4rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--line); border-left: 6px solid var(--marigold);
+  border-radius: 18px; box-shadow: var(--shadow);
+}
+.worksheet-next h2{ font-family: var(--serif); font-size: 1.25rem; margin: 0 0 .5rem; }
+.worksheet-next p{ font-size: 1.05rem; color: var(--ink-soft); max-width: 58ch; margin: 0 0 1rem; }
+.worksheet-next p:last-child{ margin: 0; }
 
 .simple-page{ padding: 2.4rem 1.5rem 4rem; max-width: 66ch; margin: 0 auto; }
 .simple-page h1{ font-family: var(--serif); font-size: 2rem; }
@@ -192,16 +245,31 @@ a:hover{ color: var(--ink); }
 .simple-page p, .simple-page li{ color: var(--ink-soft); }
 
 @media print{
-  .site-header, .site-footer, .worksheet-actions, .reset-row, .skip-link{ display:none !important; }
+  .site-header, .site-footer, .worksheet-actions, .reset-row, .skip-link,
+  .worksheet-next, .support, .handoff{ display:none !important; }
   body{ background:#fff; }
   .section-block, .category-block{ box-shadow:none; }
 }
 @media (max-width: 760px){
   .wrap{ padding-left: 1rem; padding-right: 1rem; }
-  .site-nav{ order:3; width:100%; gap:.4rem 1rem; }
-  .hero{ padding-top: 2.4rem; }
+  .site-nav{ order:3; width:100%; gap:.2rem 1.2rem; }
+  /* Keep the sticky phone header to two compact rows; support lives in the footer. */
+  .site-header .support-link{ display:none; }
+  .hero{ padding: 1.5rem 0 1.4rem; }
+  .hero h1{ max-width: none; }
+  .hero-actions{ display:block; }
+  .hero-actions .btn{ width: 100%; }
+  .hero-actions .fine-print{ margin-top: .7rem; }
   .step-list{ grid-template-columns: 1fr; }
-  .checklist-row{ align-items:flex-start; }
+  .checklist-row{ display:block; }
+  .checklist-row .what{ margin-bottom: .7rem; }
+  .checklist-links{ gap: .5rem; }
+  .checklist-links a{ flex: 1 1 calc(50% - .3rem); }
+  .handoff-card .btn, .worksheet-next .btn{ width: 100%; }
+  .worksheet-header .wrap{ padding-left: 1rem; padding-right: 1rem; }
+  .worksheet-actions .btn{ width: 100%; }
+  .pet-fields{ gap: .8rem; }
+  .pet-fields > div{ width: 100%; }
   .pet-fields input{ width:100%; min-width:0; }
 }
 @media (prefers-reduced-motion: reduce){ html{ scroll-behavior: auto; } }

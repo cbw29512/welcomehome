@@ -36,11 +36,11 @@ def header_html(active=""):
   <div class="wrap">
     <a class="brand" href="/"><span class="tag-mark" aria-hidden="true"></span>{SITE['name']}</a>
     <nav class="site-nav" aria-label="Primary">
-      <a href="/#finder">Find a checklist</a>
-      <a href="/#how">How it helps</a>
+      <a href="/#finder">Checklists</a>
+      <a href="{SITE['health_log_url']}">Health log</a>
       <a href="/#safety">Care &amp; safety</a>
     </nav>
-    <a class="coffee-link" href="{SITE['coffee_url']}" target="_blank" rel="noopener">Buy me a coffee</a>
+    <a class="support-link" href="{SITE['coffee_url']}" target="_blank" rel="noopener">Buy me a coffee</a>
   </div>
 </header>
 """
@@ -51,12 +51,38 @@ def footer_html():
   <div class="wrap">
     <p>{SITE['name']} — free checklists for the first days with a new pet.</p>
     <div class="footer-links">
+      <a href="{SITE['health_log_url']}">Health log</a>
       <a href="/accessibility.html">Accessibility</a>
       <a href="/privacy.html">Privacy</a>
-      <a href="{SITE['coffee_url']}" target="_blank" rel="noopener">Support {SITE['name']}</a>
+      <a href="/terms.html">Terms</a>
+      <a href="{SITE['coffee_url']}" target="_blank" rel="noopener">Buy me a coffee (optional)</a>
     </div>
   </div>
 </footer>
+"""
+
+
+def health_log_section():
+    return f"""  <section class="handoff" id="next">
+    <div class="wrap">
+      <div class="handoff-card">
+        <p class="eyebrow">After the first week</p>
+        <h2>The checklists get them home. The health log keeps the record.</h2>
+        <p>Your Pet's Health Log is the free companion site for everything that comes next — weights, vet visits, medications, and what you want to ask at the next appointment. Same deal as here: no account, no email.</p>
+        <p class="handoff-action"><a class="btn btn-ghost" href="{SITE['health_log_url']}">Open the free health log</a></p>
+        <p class="fine-print">Goes to yourpetshealthlog.netlify.app. Free, nothing to buy.</p>
+      </div>
+    </div>
+  </section>
+"""
+
+
+def support_section():
+    return f"""  <section class="support" id="support">
+    <div class="wrap">
+      <p>Every checklist here stays free. If one of them saved you a second trip to the pet store, you can <a href="{SITE['coffee_url']}" target="_blank" rel="noopener">buy me a coffee</a> — completely optional, and it never unlocks anything, because nothing here is locked.</p>
+    </div>
+  </section>
 """
 
 
@@ -89,8 +115,8 @@ def build_category_blocks():
           <p class="what">{preview}, and more.</p>
         </div>
         <div class="checklist-links">
+          <a class="web" href="{worksheet_href}">Open checklist</a>
           <a class="pdf" href="{pdf_href}">Printable PDF</a>
-          <a class="web" href="{worksheet_href}">Web worksheet</a>
         </div>
       </div>""")
         blocks.append(f"""  <div class="category-block" id="{cat_key}">
@@ -111,16 +137,30 @@ def build_index():
 
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Free printable checklists for new pet parents</p>
+      <p class="eyebrow">Free printable pet checklists</p>
       <h1>Bring them home ready, not scrambling.</h1>
-      <p class="lede">Whatever's joining your family — dog, cat, rabbit, guinea pig, or bird — get the first week, the shopping list, the first vet visit, and the home safety walk-through in one place.</p>
+      <p class="lede">Dog, cat, rabbit, guinea pig, or bird — the first week, the supply list, the first vet visit, and the home safety pass, all in one place.</p>
       <div class="hero-actions">
-        <a class="btn" href="#finder">Find your checklist</a>
-        <p class="fine-print">Free. No account. No email.</p>
+        <a class="btn btn-lg" href="#finder">Get your free checklist</a>
+        <p class="fine-print">Free. No account. No email. Works on your phone.</p>
       </div>
+      <p class="hero-aside">Already settled in? <a href="{SITE['health_log_url']}">Open the free health log</a> to track weights, vet visits, and meds.</p>
     </div>
   </section>
 
+  <section class="finder" id="finder">
+    <div class="wrap">
+      <h2>Pick your pet, grab your checklist</h2>
+      <p>Tap a pet to narrow it down. Every checklist opens as a tappable worksheet on your phone, or a printable PDF.</p>
+      <ul class="species-tabs">
+      {build_species_tabs()}
+      </ul>
+
+{build_category_blocks()}
+    </div>
+  </section>
+
+{health_log_section()}
   <section class="steps" id="how">
     <div class="wrap">
       <h2>How it helps</h2>
@@ -138,21 +178,9 @@ def build_index():
         <li>
           <p class="step-num">3</p>
           <h3>Walk in ready</h3>
-          <p>Print it, or check items off on your phone as you go. Either way, less scrambling on day one.</p>
+          <p>Check items off on your phone as you go, or print it for the fridge. Either way, less scrambling on day one.</p>
         </li>
       </ol>
-    </div>
-  </section>
-
-  <section class="finder" id="finder">
-    <div class="wrap">
-      <h2>Find a checklist</h2>
-      <p>Filter by pet, or browse everything below. Every checklist comes as a printable PDF and an accessible web worksheet.</p>
-      <ul class="species-tabs">
-      {build_species_tabs()}
-      </ul>
-
-{build_category_blocks()}
     </div>
   </section>
 
@@ -164,6 +192,7 @@ def build_index():
     </div>
   </section>
 
+{support_section()}
 </main>
 {footer_html()}
 <script src="/assets/site.js"></script>
@@ -216,9 +245,10 @@ def build_worksheet(sp_key, cat_key):
       <p class="crumb"><a href="/#{cat_key}">{SITE['name']}</a> / {cat['short']} / {sp['label']}</p>
       <h1>{cat['title']}</h1>
       <p class="sub">For {sp['label']}. {cat['desc']}</p>
+      <p class="worksheet-hint">Tap an item to check it off. Your progress saves on this device — no account needed.</p>
       <div class="worksheet-actions">
-        <a class="btn" href="{pdf_href}">Download printable PDF</a>
-        <a class="btn btn-ghost" href="/#finder">See other checklists</a>
+        <a class="btn btn-ghost" href="{pdf_href}">Download printable PDF</a>
+        <a class="text-link" href="/#finder">See other checklists</a>
       </div>
       <div class="pet-fields">
         <div>
@@ -240,6 +270,12 @@ def build_worksheet(sp_key, cat_key):
 {chr(10).join(section_blocks)}
 
       <p class="reset-row"><button type="button" data-reset>Clear this worksheet</button></p>
+
+      <div class="worksheet-next">
+        <h2>Once the first week is behind you</h2>
+        <p>Weights, vet visits, medications, and questions for the next appointment all live in Your Pet's Health Log — the free companion site.</p>
+        <p><a class="btn btn-ghost" href="{SITE['health_log_url']}">Open the free health log</a></p>
+      </div>
     </div>
   </div>
 </main>
@@ -310,11 +346,59 @@ def build_privacy():
         f.write(html)
 
 
+def build_terms():
+    title = f"Terms | {SITE['name']}"
+    desc = "Terms for Welcome Home's free pet checklists and optional support."
+    html = base_head(title, desc, "/terms.html") + f"""<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+{header_html()}
+<main id="main">
+  <section class="simple-page">
+    <h1>Terms</h1>
+    <p>{SITE['name']} checklists are organizational aids. They do not diagnose, prescribe, or replace a veterinarian.</p>
+    <h2>Everything here is free</h2>
+    <p>Every checklist, worksheet, and PDF on this site is free to download and use. There is no account, no email wall, and nothing to buy to get the full version — this is the full version.</p>
+    <h2>Optional support</h2>
+    <p>If you want to chip in for the hosting, there's a Buy Me a Coffee link in the footer. It is entirely optional and it does not unlock extra content.</p>
+    <h2>Supply links</h2>
+    <p>Shopping lists may later include affiliate links. If they do, {SITE['name']} may earn a commission, the price you pay does not change, and those links are not veterinary recommendations.</p>
+    <p><a href="/privacy.html">Privacy</a> &middot; <a href="/accessibility.html">Accessibility</a></p>
+  </section>
+</main>
+{footer_html()}
+</body>
+</html>
+"""
+    with open(os.path.join(SITE_DIR, "terms.html"), "w") as f:
+        f.write(html)
+
+
+def build_404():
+    title = f"Page Not Found | {SITE['name']}"
+    desc = "That Welcome Home pet checklist page could not be found. Browse the free new pet checklists instead."
+    html = base_head(title, desc, "/404.html") + f"""<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+{header_html()}
+<main id="main">
+  <section class="simple-page">
+    <h1>That page wandered off.</h1>
+    <p>The checklist or page you tried to open is not here.</p>
+    <p><a class="btn" href="/#finder">Browse all pet checklists</a></p>
+  </section>
+</main>
+{footer_html()}
+</body>
+</html>
+"""
+    with open(os.path.join(SITE_DIR, "404.html"), "w") as f:
+        f.write(html)
+
+
 def build_robots_and_sitemap():
     with open(os.path.join(SITE_DIR, "robots.txt"), "w") as f:
         f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE['url']}/sitemap.xml\n")
 
-    urls = ["/", "/accessibility.html", "/privacy.html"]
+    urls = ["/", "/accessibility.html", "/privacy.html", "/terms.html"]
     for sp_key in SPECIES:
         for cat_key in CATEGORIES:
             urls.append(f"/checklists/{sp_key}-{cat_key}.html")
@@ -336,6 +420,8 @@ def main():
             build_worksheet(sp_key, cat_key)
     build_accessibility()
     build_privacy()
+    build_terms()
+    build_404()
     build_robots_and_sitemap()
     print("Site generated in", SITE_DIR)
 
